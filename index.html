@@ -289,16 +289,50 @@ const DEF = {
     {id:'tp5',name:'Hoàng Văn Dũng',role:'Phó Chánh án',spec:'',color:'#a78bfa'},
   ],
   cases:[
-    {id:'c1',soDon:'01/2026/DS-ST',loai:'DS',ngayNhan:'2026-01-05',nguyenDon:'Nguyễn Thị Hoa',biDon:'Trần Văn Bình',tjid:'tp2',thoiHan:30,uuTien:'normal',ts:'dangXuLy',noiDung:'Tranh chấp hợp đồng mua bán đất đai 500m².',ghiChu:'Đã nộp đủ tạm ứng án phí.',mod:'don',
-      cl:[{id:'a1',t:'Nhận và kiểm tra đơn',done:true,at:'2026-01-05'},{id:'a2',t:'Thông báo nộp tạm ứng án phí',done:true,at:'2026-01-07'},{id:'a3',t:'Ra quyết định thụ lý',done:true,at:'2026-01-10'},{id:'a4',t:'Xác minh thu thập chứng cứ',done:false,at:null},{id:'a5',t:'Hòa giải lần 1',done:false,at:null},{id:'a6',t:'Đưa vụ án ra xét xử',done:false,at:null}]},
-    {id:'c2',soDon:'02/2026/HS-ST',loai:'HS',ngayNhan:'2026-01-08',nguyenDon:'VKSND',biDon:'Lê Văn Toàn',tjid:'tp3',thoiHan:45,uuTien:'urgent',ts:'dangXuLy',noiDung:'Trộm cắp tài sản 85 triệu đồng.',ghiChu:'',mod:'vuan',
-      cl:[{id:'b1',t:'Nhận hồ sơ từ VKS',done:true,at:'2026-01-08'},{id:'b2',t:'Nghiên cứu hồ sơ',done:true,at:'2026-01-12'},{id:'b3',t:'Ra quyết định đưa vụ án ra xét xử',done:false,at:null},{id:'b4',t:'Phiên tòa xét xử',done:false,at:null},{id:'b5',t:'Tuyên án và lập biên bản',done:false,at:null}]},
-    {id:'c3',soDon:'03/2026/DS-ST',loai:'DS',ngayNhan:'2025-12-15',nguyenDon:'Công ty CP Minh Long',biDon:'Trần Văn Hải',tjid:'tp2',thoiHan:30,uuTien:'high',ts:'quaHan',noiDung:'Tranh chấp thuê nhà, nợ 45 triệu.',ghiChu:'Bị đơn chưa có mặt.',mod:'don',
-      cl:[{id:'c1i',t:'Nhận và kiểm tra đơn',done:true,at:'2025-12-15'},{id:'c2i',t:'Thụ lý vụ án',done:true,at:'2025-12-18'},{id:'c3i',t:'Thu thập chứng cứ',done:true,at:'2025-12-28'},{id:'c4i',t:'Hòa giải',done:false,at:null},{id:'c5i',t:'Xét xử',done:false,at:null}]},
-    {id:'c4',soDon:'04/2026/HC-ST',loai:'HC',ngayNhan:'2026-02-01',nguyenDon:'Nguyễn Văn Phong',biDon:'UBND huyện Yên Khánh',tjid:'tp4',thoiHan:60,uuTien:'normal',ts:'dangXuLy',noiDung:'Khiếu kiện quyết định thu hồi đất.',ghiChu:'',mod:'vuan',
-      cl:[{id:'d1',t:'Nhận đơn và hồ sơ',done:true,at:'2026-02-01'},{id:'d2',t:'Thông báo thụ lý',done:true,at:'2026-02-05'},{id:'d3',t:'Đối thoại các bên',done:false,at:null},{id:'d4',t:'Chuẩn bị phiên xét xử',done:false,at:null},{id:'d5',t:'Phiên tòa xét xử',done:false,at:null},{id:'d6',t:'Ban hành bản án',done:false,at:null}]},
-    {id:'c5',soDon:'05/2026/HN-ST',loai:'HN',ngayNhan:'2026-02-10',nguyenDon:'Nguyễn Thị Mai',biDon:'Trần Văn Nam',tjid:'',thoiHan:30,uuTien:'normal',ts:'dauGiai',noiDung:'Ly hôn, tranh chấp nuôi con và tài sản.',ghiChu:'',mod:'don',
-      cl:[{id:'e1',t:'Nhận đơn và xác định điều kiện',done:true,at:'2026-02-10'},{id:'e2',t:'Hòa giải tại tòa',done:false,at:null},{id:'e3',t:'Xét xử và tuyên án',done:false,at:null}]},
+    {id:'c1',soDon:'01/2026/DS-ST',loai:'DS',ngayNhan:'2026-01-05',nguyenDon:'Nguyễn Thị Hoa',biDon:'Trần Văn Bình',tjid:'tp2',thoiHan:30,uuTien:'normal',ts:'dangXuLy',noiDung:'Tranh chấp hợp đồng mua bán đất đai 500m².',ghiChu:'Đã nộp đủ tạm ứng án phí.',mod:'don',donXong:false,soThuLy:'',ngayThuLy:'',
+      cl:[
+        {id:'a1',t:'Nhận và kiểm tra đơn khởi kiện',done:true,at:'2026-01-05',type:'normal'},
+        {id:'a2',t:'Ra thông báo sửa đổi, bổ sung đơn',done:true,at:'2026-01-06',type:'normal'},
+        {id:'a3',t:'Trả lại đơn khởi kiện',done:false,at:null,type:'final'},
+        {id:'a4',t:'Chuyển thẩm quyền',done:false,at:null,type:'final'},
+        {id:'a5',t:'Đề xuất thụ lý vụ án',done:false,at:null,type:'final'},
+      ]},
+    {id:'c2',soDon:'02/2026/HS-ST',loai:'HS',ngayNhan:'2026-01-08',nguyenDon:'VKSND',biDon:'Lê Văn Toàn',tjid:'tp3',thoiHan:45,uuTien:'urgent',ts:'dangXuLy',noiDung:'Trộm cắp tài sản 85 triệu đồng.',ghiChu:'',mod:'vuan',soThuLy:'02/2026/TLHS',ngayThuLy:'2026-01-10',
+      cl:[
+        {id:'b1',t:'Thụ lý vụ án',done:true,at:'2026-01-10',type:'normal'},
+        {id:'b2',t:'Chuẩn bị xét xử / thu thập chứng cứ',done:true,at:'2026-01-15',type:'normal'},
+        {id:'b2x',t:'Công khai tài liệu lần cuối trước khi ra QĐXX',done:false,at:null,type:'normal'},
+        {id:'b3',t:'Ra QĐXX (Quyết định đưa vụ án ra xét xử)',done:false,at:null,type:'finish_a'},
+        {id:'b4',t:'Phiên tòa xét xử',done:false,at:null,type:'finish_a'},
+        {id:'b5',t:'Ra QĐ công nhận (hòa giải / đối thoại thành)',done:false,at:null,type:'finish_b'},
+        {id:'b6',t:'Tuyên án / ban hành bản án',done:false,at:null,type:'normal'},
+      ]},
+    {id:'c3',soDon:'03/2026/DS-ST',loai:'DS',ngayNhan:'2025-12-15',nguyenDon:'Công ty CP Minh Long',biDon:'Trần Văn Hải',tjid:'tp2',thoiHan:30,uuTien:'high',ts:'quaHan',noiDung:'Tranh chấp thuê nhà, nợ 45 triệu.',ghiChu:'Bị đơn chưa có mặt.',mod:'don',donXong:false,soThuLy:'',ngayThuLy:'',
+      cl:[
+        {id:'c1i',t:'Nhận và kiểm tra đơn khởi kiện',done:true,at:'2025-12-15',type:'normal'},
+        {id:'c2i',t:'Ra thông báo sửa đổi, bổ sung đơn',done:false,at:null,type:'normal'},
+        {id:'c3i',t:'Trả lại đơn khởi kiện',done:false,at:null,type:'final'},
+        {id:'c4i',t:'Chuyển thẩm quyền',done:false,at:null,type:'final'},
+        {id:'c5i',t:'Đề xuất thụ lý vụ án',done:false,at:null,type:'final'},
+      ]},
+    {id:'c4',soDon:'04/2026/HC-ST',loai:'HC',ngayNhan:'2026-02-01',nguyenDon:'Nguyễn Văn Phong',biDon:'UBND huyện Yên Khánh',tjid:'tp4',thoiHan:60,uuTien:'normal',ts:'dangXuLy',noiDung:'Khiếu kiện quyết định thu hồi đất.',ghiChu:'',mod:'vuan',soThuLy:'04/2026/TLHC',ngayThuLy:'2026-02-05',
+      cl:[
+        {id:'d1',t:'Thụ lý vụ án',done:true,at:'2026-02-05',type:'normal'},
+        {id:'d2',t:'Chuẩn bị xét xử / thu thập chứng cứ',done:true,at:'2026-02-15',type:'normal'},
+        {id:'d2x',t:'Công khai tài liệu lần cuối trước khi ra QĐXX',done:false,at:null,type:'normal'},
+        {id:'d3',t:'Ra QĐXX (Quyết định đưa vụ án ra xét xử)',done:false,at:null,type:'finish_a'},
+        {id:'d4',t:'Phiên tòa xét xử',done:false,at:null,type:'finish_a'},
+        {id:'d5',t:'Ra QĐ công nhận (hòa giải / đối thoại thành)',done:false,at:null,type:'finish_b'},
+        {id:'d6',t:'Tuyên án / ban hành bản án',done:false,at:null,type:'normal'},
+      ]},
+    {id:'c5',soDon:'05/2026/HN-ST',loai:'HN',ngayNhan:'2026-02-10',nguyenDon:'Nguyễn Thị Mai',biDon:'Trần Văn Nam',tjid:'',thoiHan:30,uuTien:'normal',ts:'dauGiai',noiDung:'Ly hôn, tranh chấp nuôi con và tài sản.',ghiChu:'',mod:'don',donXong:false,soThuLy:'',ngayThuLy:'',
+      cl:[
+        {id:'e1',t:'Nhận và kiểm tra đơn khởi kiện',done:false,at:null,type:'normal'},
+        {id:'e2',t:'Ra thông báo sửa đổi, bổ sung đơn',done:false,at:null,type:'normal'},
+        {id:'e3',t:'Trả lại đơn khởi kiện',done:false,at:null,type:'final'},
+        {id:'e4',t:'Chuyển thẩm quyền',done:false,at:null,type:'final'},
+        {id:'e5',t:'Đề xuất thụ lý vụ án',done:false,at:null,type:'final'},
+      ]},
   ]
 };
 
@@ -317,11 +351,11 @@ const myJid=()=>session?session.jid:null;
 
 function dlDays(nn,th){const e=new Date(nn);e.setDate(e.getDate()+parseInt(th));return Math.ceil((e-new Date())/(864e5))}
 function dlLabel(nn,th){const d=dlDays(nn,th);if(d<0)return`<span class="dl-ov">🔴 Quá ${Math.abs(d)} ngày</span>`;if(d<=7)return`<span class="dl-w">⚠ Còn ${d} ngày</span>`;return`<span class="dl-ok">Còn ${d} ngày</span>`}
-function stB(s){const m={dauGiai:['bg-b','Đang thụ lý'],dangXuLy:['bg-a','Đang xử lý'],quaHan:['bg-r','Quá hạn'],hoangTat:['bg-g','Hoàn tất'],dinh:['bg-x','Đình chỉ']};const[c,l]=m[s]||['bg-x',s];return`<span class="badge ${c}">${l}</span>`}
+function stB(s){const m={dauGiai:['bg-b','Đang thụ lý'],dangXuLy:['bg-a','Đang xử lý'],quaHan:['bg-r','Quá hạn'],hoangTat:['bg-g','Hoàn tất'],dinh:['bg-x','Đình chỉ'],choThuLy:['bg-pu','⏳ Chờ Admin thụ lý']};const[c,l]=m[s]||['bg-x',s];return`<span class="badge ${c}">${l}</span>`}
 function loaiB(l){const m={DS:'bg-b',HS:'bg-r',HC:'bg-a',KDTM:'bg-t',LD:'bg-g',HN:'bg-x'};return`<span class="badge ${m[l]||'bg-x'}">${l}</span>`}
 function utB(u){if(u==='urgent')return'<span class="badge bg-r">🔴 Khẩn</span>';if(u==='high')return'<span class="badge bg-a">🟠 Cao</span>';return'<span class="badge bg-x">🟢 Thường</span>'}
 
-function autoStatus(){S.cases.forEach(c=>{if(c.ts==='hoangTat'||c.ts==='dinh')return;if(dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='quaHan')c.ts='quaHan'})}
+function autoStatus(){S.cases.forEach(c=>{if(c.ts==='hoangTat'||c.ts==='dinh'||c.ts==='choThuLy')return;if(dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='quaHan')c.ts='quaHan'})}
 
 // ═══════════════ LOGIN ═══════════════
 function renderLogin(){
@@ -389,7 +423,8 @@ function updBadges(){
   document.getElementById('nb-don').textContent=cs.filter(c=>c.mod==='don'&&c.ts!=='hoangTat').length;
   document.getElementById('nb-vuan').textContent=cs.filter(c=>c.mod==='vuan'&&c.ts!=='hoangTat').length;
   document.getElementById('nb-cb').textContent=cs.filter(c=>dlDays(c.ngayNhan,c.thoiHan)<=7&&c.ts!=='hoangTat').length;
-  const pcel=document.getElementById('nb-pc');if(pcel)pcel.textContent=un;
+  const choThuLyCnt=S.cases.filter(c=>c.ts==='choThuLy').length;
+  const pcel=document.getElementById('nb-pc');if(pcel)pcel.textContent=choThuLyCnt;
 }
 
 // ═══════════════ PAGES ═══════════════
@@ -509,8 +544,9 @@ function renderList(mod){
 // PHÂN CÔNG
 function renderPC(){
   if(!isAdmin())return'<div class="ab ad">🚫 Chỉ Admin mới có quyền.</div>';
-  const un=S.cases.filter(c=>!c.tjid&&c.ts!=='hoangTat');
-  const as=S.cases.filter(c=>c.tjid&&c.ts!=='hoangTat');
+  const choThuLy=S.cases.filter(c=>c.ts==='choThuLy');
+  const un=S.cases.filter(c=>!c.tjid&&c.ts!=='hoangTat'&&c.ts!=='choThuLy');
+  const as=S.cases.filter(c=>c.tjid&&c.ts!=='hoangTat'&&c.ts!=='choThuLy');
   const unRows=un.length?un.map(c=>`<tr>
     <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td><td>${utB(c.uuTien)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
     <td><button class="btn btn-p btn-sm" onclick="openAs('${c.id}');event.stopPropagation()">📌 Phân công</button></td>
@@ -521,7 +557,18 @@ function renderPC(){
     <td>${stB(c.ts)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
     <td><button class="btn btn-s btn-sm" onclick="openAs('${c.id}');event.stopPropagation()">✏️ Đổi</button></td>
   </tr>`}).join('');
+  const ctlRows=choThuLy.length?choThuLy.map(c=>{
+    const finalItem=c.cl.find(x=>x.type==='final'&&x.done);
+    return`<tr>
+      <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td>
+      <td><span class="badge bg-t">${finalItem?finalItem.t:'—'}</span></td>
+      <td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
+      <td><button class="btn btn-p btn-sm" onclick="openThuLy('${c.id}');event.stopPropagation()">⚖️ Thụ lý & Phân công</button></td>
+    </tr>`;}).join(''):`<tr><td colspan="7" style="text-align:center;padding:14px;color:var(--text2)">Không có hồ sơ chờ thụ lý</td></tr>`;
   return`
+  ${choThuLy.length?`<div class="ab aw">📬 Có <b>${choThuLy.length} hồ sơ</b> đã xử lý đơn xong, đang chờ Admin thụ lý và phân công.</div>`:''}
+  <div style="font-size:13px;font-weight:800;margin-bottom:7px;color:var(--purple)">📬 ĐÃ XỬ LÝ ĐƠN – CHỜ THỤ LÝ (${choThuLy.length})</div>
+  <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Kết quả xử lý đơn</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${ctlRows}</tbody></table></div>
   ${un.length?`<div class="ab aw">⚠️ Có <b>${un.length} hồ sơ</b> chưa phân công Thẩm phán. Hãy phân công để bắt đầu xử lý.</div>`:''}
   <div style="font-size:13px;font-weight:800;margin-bottom:7px;color:var(--red)">⏳ CHƯA PHÂN CÔNG (${un.length})</div>
   <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Ưu tiên</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${unRows}</tbody></table></div>
@@ -626,15 +673,38 @@ function openDt(id){
   document.getElementById('dt-t').textContent=`${c.soDon} — ${c.nguyenDon} vs ${c.biDon}`;
   document.getElementById('dt-s').textContent=`${c.loai} · Nhận ${fmt(c.ngayNhan)} · ${j?j.name:'Chưa phân công'}`;
   let ah='';
-  if(days<0)ah=`<div class="ab ad">🚨 <strong>ĐÃ QUÁ HẠN ${Math.abs(days)} NGÀY!</strong> Cần xử lý khẩn cấp.</div>`;
+  if(c.ts==='choThuLy') ah=`<div class="ab" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--purple)">📬 Hồ sơ đã xử lý đơn xong, đang chờ Admin thụ lý và chuyển sang Module 2.${isAdmin()?` <b style="cursor:pointer;text-decoration:underline" onclick="cm('m-dt');openThuLy('${c.id}')">→ Thụ lý ngay</b>`:''}</div>`;
+  else if(days<0)ah=`<div class="ab ad">🚨 <strong>ĐÃ QUÁ HẠN ${Math.abs(days)} NGÀY!</strong> Cần xử lý khẩn cấp.</div>`;
   else if(days<=7)ah=`<div class="ab aw">⚠️ Còn <strong>${days} ngày</strong> để giải quyết.</div>`;
-  if(!canEdit)ah+=`<div class="ron">👁️ Bạn chỉ có thể xem hồ sơ này (không được phân công cho bạn).</div>`;
-  const clHtml=c.cl.map(item=>`
-    <div class="cli ${item.done?'done':''}" id="cli-${item.id}">
-      <input type="checkbox" id="chk-${item.id}" ${item.done?'checked':''} ${canEdit?'':'disabled'} onchange="togChk('${id}','${item.id}')">
-      <label class="cll" for="chk-${item.id}">${item.t}</label>
+  if(!canEdit&&c.ts!=='choThuLy')ah+=`<div class="ron">👁️ Bạn chỉ có thể xem hồ sơ này (không được phân công cho bạn).</div>`;
+  // Module 1: check if a final item is done
+  const finalDone = c.mod==='don' ? c.cl.find(x=>x.type==='final'&&x.done) : null;
+  const clHtml=c.cl.map(item=>{
+    // Module 1: final items are mutually exclusive
+    const isFinal = item.type==='final';
+    const isOtherFinalDone = isFinal && finalDone && finalDone.id!==item.id;
+    const locked = !canEdit || isOtherFinalDone || (c.donXong && c.mod==='don');
+    // Module 2: finish types
+    const isFinishA = item.type==='finish_a';
+    const isFinishB = item.type==='finish_b';
+    // Styling
+    let extraStyle='';
+    if(isFinal) extraStyle='border-left:3px solid var(--amber);';
+    if(item.done && isFinal) extraStyle='border-left:3px solid var(--teal);background:rgba(0,196,167,0.06);';
+    if(isOtherFinalDone) extraStyle='opacity:0.35;';
+    if(isFinishA) extraStyle='border-left:3px solid var(--blue);';
+    if(isFinishB) extraStyle='border-left:3px solid var(--purple);';
+    if(item.done && (isFinishA||isFinishB)) extraStyle='border-left:3px solid var(--green);background:rgba(49,196,141,0.06);';
+    let tag='';
+    if(isFinal) tag=` <span style="font-size:10px;color:var(--amber);font-weight:700">[KẾT QUẢ]</span>`;
+    if(isFinishA) tag=` <span style="font-size:10px;color:var(--blue);font-weight:700">[ĐƯỜNG A]</span>`;
+    if(isFinishB) tag=` <span style="font-size:10px;color:var(--purple);font-weight:700">[ĐƯỜNG B]</span>`;
+    return`<div class="cli ${item.done?'done':''}" id="cli-${item.id}" style="${extraStyle}">
+      <input type="checkbox" id="chk-${item.id}" ${item.done?'checked':''} ${locked?'disabled':''} onchange="togChk('${id}','${item.id}')">
+      <label class="cll" for="chk-${item.id}">${item.t}${tag}</label>
       <span class="cld">${item.done?'✓ '+fmt(item.at):''}</span>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   const tlHtml=c.cl.map((item,i)=>`
     <div class="tli ${item.done?'':(days<0?'ovd':'pend')}">
       <div class="tld">Bước ${i+1}${item.done?' · '+fmt(item.at):''}</div>
@@ -644,6 +714,7 @@ function openDt(id){
   const jOpts=S.judges.map(jj=>`<option value="${jj.id}" ${c.tjid===jj.id?'selected':''}>${jj.name}</option>`).join('');
   document.getElementById('dt-b').innerHTML=`
     ${ah}
+    ${c.ts==='hoangTat'&&c.mod==='vuan'?`<div class="ab as" style="margin-bottom:12px">🏆 <strong>Vụ án đã giải quyết xong!</strong> ${c.cl.find(x=>x.type==='finish_b'&&x.done)?'Đường B – Ra QĐ công nhận.':'Đường A – Ra QĐXX và phiên tòa xét xử.'}</div>`:''}
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px">
       <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:9px;text-align:center"><div style="font-size:19px;font-weight:900;color:var(--teal);font-family:'JetBrains Mono'">${r.p}%</div><div style="font-size:10px;color:var(--text2)">Tiến độ</div></div>
       <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:9px;text-align:center"><div style="font-size:19px;font-weight:900;color:${days<0?'var(--red)':days<=7?'var(--amber)':'var(--green)'};font-family:'JetBrains Mono'">${Math.abs(days)}</div><div style="font-size:10px;color:var(--text2)">${days<0?'Ngày quá hạn':'Ngày còn lại'}</div></div>
@@ -657,6 +728,11 @@ function openDt(id){
     </div>
     <div class="tp active" id="tp-cl">
       <div class="cl">${clHtml}</div>
+      ${c.mod==='vuan'?`<div style="margin-top:10px;padding:9px 12px;background:rgba(255,255,255,.03);border-radius:7px;font-size:12px;color:var(--text2);border:1px solid var(--border)">
+        <b>Lộ trình giải quyết:</b>
+        <span style="color:var(--blue)">■ Đường A</span>: Ra QĐXX <b>và</b> Phiên tòa xét xử → Hoàn tất &nbsp;|&nbsp;
+        <span style="color:var(--purple)">■ Đường B</span>: Ra QĐ công nhận → Hoàn tất
+      </div>`:''}
       <div style="margin-top:10px">
         <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:5px">Ghi chú Thẩm phán</div>
         <textarea id="gcInput" rows="3" ${canEdit?'':'readonly'} style="width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:7px;padding:8px 10px;color:var(--text);font-family:'Be Vietnam Pro';font-size:13px;outline:none;resize:vertical" placeholder="Ghi chú...">${c.ghiChu||''}</textarea>
@@ -685,13 +761,44 @@ function openDt(id){
           </select>
         </div>`:''}
         <div class="fg full"><label>Nội dung</label><textarea rows="3" readonly style="opacity:.65">${c.noiDung}</textarea></div>
+        ${c.soThuLy?`<div class="fg"><label>Số thụ lý</label><input value="${c.soThuLy}" readonly style="opacity:.65;color:var(--teal)"></div>`:''}
+        ${c.ngayThuLy?`<div class="fg"><label>Ngày thụ lý</label><input value="${fmt(c.ngayThuLy)}" readonly style="opacity:.65;color:var(--teal)"></div>`:''}
       </div>
     </div>`;
   om('m-dt');
 }
 
 function swTab(el,tid){const ctx=el.closest('.mb');ctx.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');ctx.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));document.getElementById(tid).classList.add('active')}
-function togChk(cid,iid){const c=S.cases.find(x=>x.id===cid);if(!c)return;const canEdit=isAdmin()||c.tjid===myJid();if(!canEdit)return;const item=c.cl.find(x=>x.id===iid);if(!item)return;item.done=!item.done;item.at=item.done?today():null;const el=document.getElementById('cli-'+iid);if(el){el.classList.toggle('done',item.done);el.querySelector('.cld').textContent=item.done?'✓ '+fmt(item.at):''}save();renderPage(curPage)}
+function togChk(cid,iid){
+  const c=S.cases.find(x=>x.id===cid);if(!c)return;
+  const canEdit=isAdmin()||c.tjid===myJid();if(!canEdit)return;
+  const item=c.cl.find(x=>x.id===iid);if(!item)return;
+
+  // MODULE 1: final items are mutually exclusive (only one can be checked)
+  if(c.mod==='don' && item.type==='final'){
+    if(!item.done){
+      // uncheck all other final items first
+      c.cl.filter(x=>x.type==='final'&&x.id!==iid).forEach(x=>{x.done=false;x.at=null;});
+      item.done=true; item.at=today();
+      // trigger confirmation dialog
+      save(); cm('m-dt'); openConfirmDone(cid); return;
+    } else {
+      item.done=false; item.at=null;
+    }
+  } else {
+    item.done=!item.done; item.at=item.done?today():null;
+  }
+
+  // MODULE 2: check if case should be marked complete
+  if(c.mod==='vuan'){
+    const pathA = c.cl.filter(x=>x.type==='finish_a').every(x=>x.done);
+    const pathB = c.cl.some(x=>x.type==='finish_b'&&x.done);
+    if(pathA||pathB){ c.ts='hoangTat'; }
+    else if(c.ts==='hoangTat'){ c.ts='dangXuLy'; }
+  }
+
+  save(); openDt(cid);
+}
 function saveDt(){if(!curDetailId)return;const c=S.cases.find(x=>x.id===curDetailId);if(!c)return;const g=document.getElementById('gcInput');if(g)c.ghiChu=g.value;save();cm('m-dt');renderPage(curPage)}
 function qReas(id,jid){const c=S.cases.find(x=>x.id===id);if(c){c.tjid=jid;save()}}
 function qStat(id,s){const c=S.cases.find(x=>x.id===id);if(c){c.ts=s;save()}}
@@ -718,8 +825,24 @@ function selNewJ(id){newDonJid=id;document.querySelectorAll('#f-al .ar').forEach
 function addDon(){
   const sd=document.getElementById('f-sd').value.trim();if(!sd){alert('Vui lòng nhập số đơn');return}
   const t=Date.now();
-  S.cases.push({id:'c'+t,soDon:sd,loai:document.getElementById('f-l').value,ngayNhan:document.getElementById('f-nn').value||today(),nguyenDon:document.getElementById('f-nd').value,biDon:document.getElementById('f-bd').value,tjid:newDonJid,thoiHan:parseInt(document.getElementById('f-th').value)||30,uuTien:document.getElementById('f-ut').value,ts:newDonJid?'dangXuLy':'dauGiai',noiDung:document.getElementById('f-noidung').value,ghiChu:'',mod:document.getElementById('f-m').value,
-    cl:[{id:'n'+t+'1',t:'Nhận và kiểm tra đơn',done:false,at:null},{id:'n'+t+'2',t:'Thông báo nộp tạm ứng án phí',done:false,at:null},{id:'n'+t+'3',t:'Ra quyết định thụ lý / trả đơn',done:false,at:null},{id:'n'+t+'4',t:'Xác minh thu thập chứng cứ',done:false,at:null},{id:'n'+t+'5',t:'Hòa giải các bên',done:false,at:null},{id:'n'+t+'6',t:'Đưa vụ án ra xét xử',done:false,at:null},{id:'n'+t+'7',t:'Ban hành bản án / quyết định',done:false,at:null}]});
+  const mod=document.getElementById('f-m').value;
+  const clDon=[
+    {id:'n'+t+'1',t:'Nhận và kiểm tra đơn khởi kiện',done:false,at:null,type:'normal'},
+    {id:'n'+t+'2',t:'Ra thông báo sửa đổi, bổ sung đơn',done:false,at:null,type:'normal'},
+    {id:'n'+t+'3',t:'Trả lại đơn khởi kiện',done:false,at:null,type:'final'},
+    {id:'n'+t+'4',t:'Chuyển thẩm quyền',done:false,at:null,type:'final'},
+    {id:'n'+t+'5',t:'Đề xuất thụ lý vụ án',done:false,at:null,type:'final'},
+  ];
+  const clVuan=[
+    {id:'n'+t+'1',t:'Thụ lý vụ án',done:false,at:null,type:'normal'},
+    {id:'n'+t+'2',t:'Chuẩn bị xét xử / thu thập chứng cứ',done:false,at:null,type:'normal'},
+    {id:'n'+t+'2x',t:'Công khai tài liệu lần cuối trước khi ra QĐXX',done:false,at:null,type:'normal'},
+    {id:'n'+t+'3',t:'Ra QĐXX (Quyết định đưa vụ án ra xét xử)',done:false,at:null,type:'finish_a'},
+    {id:'n'+t+'4',t:'Phiên tòa xét xử',done:false,at:null,type:'finish_a'},
+    {id:'n'+t+'5',t:'Ra QĐ công nhận (hòa giải / đối thoại thành)',done:false,at:null,type:'finish_b'},
+    {id:'n'+t+'6',t:'Tuyên án / ban hành bản án',done:false,at:null,type:'normal'},
+  ];
+  S.cases.push({id:'c'+t,soDon:sd,loai:document.getElementById('f-l').value,ngayNhan:document.getElementById('f-nn').value||today(),nguyenDon:document.getElementById('f-nd').value,biDon:document.getElementById('f-bd').value,tjid:newDonJid,thoiHan:parseInt(document.getElementById('f-th').value)||30,uuTien:document.getElementById('f-ut').value,ts:newDonJid?'dangXuLy':'dauGiai',noiDung:document.getElementById('f-noidung').value,ghiChu:'',mod,donXong:false,soThuLy:'',ngayThuLy:'',cl:mod==='don'?clDon:clVuan});
   newDonJid='';save();cm('m-don');renderPage(curPage);
 }
 
@@ -739,6 +862,123 @@ function expCSV(){
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));a.download=`BaoCao_TAND_${today()}.csv`;a.click();
 }
 
+
+
+// ═══════════════ MODULE 1: XÁC NHẬN ĐƠN XONG ═══════════════
+let confirmDoneId = null;
+
+function openConfirmDone(cid){
+  confirmDoneId = cid;
+  const c = S.cases.find(x=>x.id===cid);
+  const finalItem = c.cl.find(x=>x.type==='final'&&x.done);
+  document.getElementById('cdone-info').innerHTML=`
+    <div style="margin-bottom:6px"><b>${c.soDon}</b> · ${c.nguyenDon} vs ${c.biDon}</div>
+    <div>Kết quả xử lý: <span class="badge bg-t" style="font-size:12px">${finalItem?finalItem.t:'—'}</span></div>`;
+  document.getElementById('cdone-ghichu').value = c.ghiChu||'';
+  om('m-confirm-done');
+}
+
+function cancelConfirmDone(){
+  // Uncheck the final item if user cancels
+  if(confirmDoneId){
+    const c=S.cases.find(x=>x.id===confirmDoneId);
+    if(c) c.cl.filter(x=>x.type==='final').forEach(x=>{x.done=false;x.at=null;});
+    save();
+  }
+  cm('m-confirm-done');
+}
+
+function submitConfirmDone(){
+  if(!confirmDoneId) return;
+  const c = S.cases.find(x=>x.id===confirmDoneId);
+  if(!c) return;
+  const gc = document.getElementById('cdone-ghichu').value;
+  c.ghiChu = gc;
+  c.donXong = true;
+  c.ts = 'choThuLy'; // new status: waiting for admin to process
+  c.tjid = ''; // release from judge, back to admin queue
+  save();
+  cm('m-confirm-done');
+  renderPage(curPage);
+  // Show success toast
+  showToast('✅ Đã xác nhận! Hồ sơ đã chuyển về Admin để xử lý tiếp.');
+}
+
+// ═══════════════ MODULE 2: ADMIN THỤ LÝ ═══════════════
+let thuLyId = null;
+let thuLyJid = null;
+
+function openThuLy(cid){
+  if(!isAdmin()) return;
+  thuLyId = cid; thuLyJid = null;
+  const c = S.cases.find(x=>x.id===cid);
+  const finalItem = c.cl.find(x=>x.type==='final'&&x.done);
+  document.getElementById('thuly-info').innerHTML=`
+    <div style="margin-bottom:4px"><b>${c.soDon}</b> · ${loaiB(c.loai)}</div>
+    <div style="color:var(--text2)">${c.nguyenDon} vs ${c.biDon}</div>
+    <div style="margin-top:4px">Kết quả xử lý đơn: <b style="color:var(--teal)">${finalItem?finalItem.t:'—'}</b></div>`;
+  document.getElementById('tl-so').value='';
+  document.getElementById('tl-ngay').value=today();
+  document.getElementById('tl-thoihan').value='30';
+  // Render judge list
+  document.getElementById('tl-judges').innerHTML = S.judges.map(j=>{
+    const wl=jload(j.id);
+    return`<div class="ar" id="tlj-${j.id}" onclick="selThuLyJudge('${j.id}')">
+      <div class="jav" style="background:${j.color}22;color:${j.color}">${ini(j.name)}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700">${j.name}</div>
+        <div class="jwl">${j.role}${j.spec?' · '+j.spec:''} · Đang xử lý: <span>${wl}</span> vụ</div>
+      </div>
+    </div>`;
+  }).join('');
+  om('m-thuly');
+}
+
+function selThuLyJudge(id){
+  thuLyJid=id;
+  document.querySelectorAll('#tl-judges .ar').forEach(r=>r.classList.remove('sel'));
+  document.getElementById('tlj-'+id)?.classList.add('sel');
+}
+
+function submitThuLy(){
+  if(!thuLyId) return;
+  const so = document.getElementById('tl-so').value.trim();
+  const ngay = document.getElementById('tl-ngay').value;
+  if(!so){alert('Vui lòng nhập số thụ lý');return}
+  if(!ngay){alert('Vui lòng nhập ngày thụ lý');return}
+  const c = S.cases.find(x=>x.id===thuLyId);
+  if(!c) return;
+  // Move to module 2
+  c.soThuLy = so;
+  c.ngayThuLy = ngay;
+  c.thoiHan = parseInt(document.getElementById('tl-thoihan').value)||30;
+  c.tjid = thuLyJid||'';
+  c.mod = 'vuan';
+  c.ts = thuLyJid ? 'dangXuLy' : 'dauGiai';
+  c.donXong = true;
+  // Replace checklist with Module 2 checklist
+  const t = Date.now();
+  c.cl = [
+    {id:'vl'+t+'1',t:'Thụ lý vụ án',done:true,at:ngay,type:'normal'},
+    {id:'vl'+t+'2',t:'Chuẩn bị xét xử / thu thập chứng cứ',done:false,at:null,type:'normal'},
+    {id:'vl'+t+'2x',t:'Công khai tài liệu lần cuối trước khi ra QĐXX',done:false,at:null,type:'normal'},
+    {id:'vl'+t+'3',t:'Ra QĐXX (Quyết định đưa vụ án ra xét xử)',done:false,at:null,type:'finish_a'},
+    {id:'vl'+t+'4',t:'Phiên tòa xét xử',done:false,at:null,type:'finish_a'},
+    {id:'vl'+t+'5',t:'Ra QĐ công nhận (hòa giải / đối thoại thành)',done:false,at:null,type:'finish_b'},
+    {id:'vl'+t+'6',t:'Tuyên án / ban hành bản án',done:false,at:null,type:'normal'},
+  ];
+  save();
+  cm('m-thuly');
+  renderPage(curPage);
+  showToast('⚖️ Đã thụ lý! Vụ án chuyển sang Module 2 – Lộ trình giải quyết.');
+}
+
+// ═══════════════ TOAST ═══════════════
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--navy3);border:1px solid var(--teal);color:var(--text);padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.5);transition:opacity .3s;';document.body.appendChild(t);}
+  t.textContent=msg; t.style.opacity='1';
+  clearTimeout(t._timer); t._timer=setTimeout(()=>{t.style.opacity='0'},3000);
+}
 
 // ─── ĐỔI MẬT KHẨU (bản thân) ───
 function om_cpw(){
@@ -796,6 +1036,47 @@ function doResetPw(){
 // BOOT
 renderLogin();
 </script>
+
+
+<!-- MODAL: XÁC NHẬN ĐƠN ĐÃ XỬ LÝ XONG -->
+<div class="mo" id="m-confirm-done">
+  <div class="modal sm">
+    <div class="mh"><h2>✅ Xác nhận đơn đã xử lý xong</h2><button class="mc" onclick="cm('m-confirm-done')">✕</button></div>
+    <div class="mb">
+      <div class="ab as" style="margin-bottom:14px">
+        🎯 Bạn đã chọn kết quả xử lý đơn. Vui lòng xác nhận để chuyển hồ sơ về Admin.
+      </div>
+      <div id="cdone-info" style="padding:12px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:12px;font-size:13px"></div>
+      <div class="fg"><label>Ghi chú kết quả (nếu có)</label><textarea id="cdone-ghichu" rows="3" placeholder="Ghi chú thêm về quyết định xử lý đơn..."></textarea></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-s" onclick="cancelConfirmDone()">↩ Quay lại</button>
+      <button class="btn btn-p" onclick="submitConfirmDone()">✅ Xác nhận & Chuyển Admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADMIN NHẬP SỐ THỤ LÝ & PHÂN CÔNG MODULE 2 -->
+<div class="mo" id="m-thuly">
+  <div class="modal sm" style="max-width:520px">
+    <div class="mh"><h2>📌 Thụ lý & Phân công vụ án</h2><button class="mc" onclick="cm('m-thuly')">✕</button></div>
+    <div class="mb">
+      <div class="ab ai" style="margin-bottom:14px">Admin nhập thông tin thụ lý và phân công Thẩm phán cho vụ án chuyển sang Module 2.</div>
+      <div id="thuly-info" style="padding:10px 12px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:12px;font-size:13px"></div>
+      <div class="fg2">
+        <div class="fg"><label>Số thụ lý</label><input id="tl-so" placeholder="VD: 01/2026/TLDS"/></div>
+        <div class="fg"><label>Ngày thụ lý</label><input type="date" id="tl-ngay"/></div>
+        <div class="fg full"><label>Thời hạn giải quyết (ngày)</label><input type="number" id="tl-thoihan" value="30" min="1"/></div>
+      </div>
+      <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:8px">Phân công Thẩm phán xét xử</div>
+      <div id="tl-judges"></div>
+    </div>
+    <div class="mf">
+      <button class="btn btn-s" onclick="cm('m-thuly')">Hủy</button>
+      <button class="btn btn-p" onclick="submitThuLy()">⚖️ Thụ lý & Chuyển Module 2</button>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL: ĐỔI MẬT KHẨU (bản thân) -->
 <div class="mo" id="m-cpw">
