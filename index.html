@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAND – Quản lý Phân hồ sơ & Vụ án</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
+:root{--navy:#0b1622;--navy2:#152032;--navy3:#1e2e42;--teal:#00c4a7;--amber:#f5a623;--red:#f05252;--green:#31c48d;--blue:#60a5fa;--purple:#a78bfa;--text:#dde6f0;--text2:#7a9ab5;--border:rgba(255,255,255,0.07);--card:rgba(21,32,50,0.95);--shadow:0 8px 32px rgba(0,0,0,0.5);--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden}
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 30% 50%,rgba(0,196,167,.08) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(96,165,250,.06) 0%,transparent 50%),var(--navy)}
+.lbox{width:420px;background:var(--navy2);border:1px solid var(--border);border-radius:16px;padding:36px 32px;box-shadow:var(--shadow)}
+.llogo{text-align:center;margin-bottom:26px}
+.llogo .court{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);font-weight:700}
+.llogo .title{font-size:19px;font-weight:900;margin-top:4px}
+.llogo .sub{font-size:12px;color:var(--text2);margin-top:6px}
+.laccs{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;max-height:280px;overflow-y:auto}
+.lacc{display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
+.lacc:hover{background:rgba(0,196,167,.07);border-color:rgba(0,196,167,.25)}
+.lacc.sel{background:rgba(0,196,167,.12);border-color:var(--teal)}
+.lav{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0}
+.lan{font-size:13px;font-weight:700}.lar{font-size:11px;color:var(--text2);margin-top:1px}
+.labg{margin-left:auto;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px}
+.labg.admin{background:rgba(0,196,167,.15);color:var(--teal)}
+.labg.judge{background:rgba(96,165,250,.15);color:var(--blue)}
+.lpw{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
+.lpw label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2)}
+.lpw input{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:10px 13px;color:var(--text);font-family:'Be Vietnam Pro';font-size:14px;outline:none;transition:border .2s}
+.lpw input:focus{border-color:var(--teal)}
+.lerr{color:var(--red);font-size:12px;text-align:center;margin-bottom:10px;display:none}
+.lhint{text-align:center;margin-top:14px;font-size:11px;color:var(--text2)}
+/* APP */
+#appScreen{display:none}
+.app{display:flex;height:100vh}
+.sidebar{width:252px;background:var(--navy2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sb-logo{padding:16px 18px 12px;border-bottom:1px solid var(--border)}
+.sb-logo .court{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);font-weight:700}
+.sb-logo .sys{font-size:13px;font-weight:800;margin-top:2px;line-height:1.35}
+.sb-user{padding:11px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;cursor:pointer}
+.sb-user:hover{background:rgba(255,255,255,.03)}
+.uav{width:33px;height:33px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex-shrink:0}
+.uinfo .urole{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.7px}
+.uinfo .uname{font-size:13px;font-weight:700}
+.uout{margin-left:auto;font-size:17px;color:var(--text2);opacity:.5}
+.uout:hover{opacity:1;color:var(--red)}
+.sbnav{flex:1;padding:8px 0;overflow-y:auto}
+.nsec{padding:9px 18px 3px;font-size:10px;font-weight:700;letter-spacing:1.4px;color:var(--text2);text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:9px;padding:8px 18px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);border-left:3px solid transparent;transition:all .2s}
+.ni:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.ni.active{background:rgba(0,196,167,.1);color:var(--teal);border-left-color:var(--teal)}
+.ni .ic{font-size:14px;width:18px;text-align:center}
+.nb{margin-left:auto;font-size:10px;font-weight:700;padding:2px 6px;border-radius:10px;min-width:18px;text-align:center}
+.nb.r{background:var(--red);color:#fff}.nb.a{background:var(--amber);color:#000}.nb.t{background:rgba(0,196,167,.2);color:var(--teal)}
+.sbfoot{padding:10px 18px;border-top:1px solid var(--border);font-size:10px;color:var(--text2)}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:52px;background:var(--navy2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tbtitle{font-size:15px;font-weight:800;flex:1}
+.btn{padding:7px 13px;border-radius:7px;font-size:12px;font-weight:700;font-family:'Be Vietnam Pro';border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.btn-p{background:var(--teal);color:#000}.btn-p:hover{background:#00dfc0}
+.btn-s{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border)}.btn-s:hover{background:rgba(255,255,255,.1)}
+.btn-sm{padding:4px 9px;font-size:11px}
+.content{flex:1;overflow-y:auto;padding:16px 20px}
+/* STATS */
+.srow{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px}
+.sc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 15px;display:flex;align-items:center;gap:11px}
+.si{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.si-t{background:rgba(0,196,167,.12)}.si-a{background:rgba(245,166,35,.12)}.si-r{background:rgba(240,82,82,.12)}.si-b{background:rgba(96,165,250,.12)}
+.sv{font-size:22px;font-weight:900;font-family:'JetBrains Mono'}.sl{font-size:11px;color:var(--text2);margin-top:1px}
+/* FILTER */
+.fbar{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 14px;display:flex;gap:9px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.fbar input,.fbar select{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:'Be Vietnam Pro';font-size:12px;outline:none;transition:border .2s}
+.fbar input:focus,.fbar select:focus{border-color:var(--teal)}
+.fbar input{min-width:190px}
+.fbar select option{background:var(--navy2)}
+.fl{font-size:11px;color:var(--text2);font-weight:700}
+/* TABLE */
+.tw{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+table{width:100%;border-collapse:collapse}
+thead th{padding:9px 12px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);background:rgba(0,0,0,.18);border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
+.mono{font-family:'JetBrains Mono';font-size:12px}
+/* BADGE */
+.badge{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.bg-g{background:rgba(49,196,141,.15);color:var(--green)}.bg-a{background:rgba(245,166,35,.15);color:var(--amber)}.bg-r{background:rgba(240,82,82,.15);color:var(--red)}.bg-b{background:rgba(96,165,250,.15);color:var(--blue)}.bg-x{background:rgba(255,255,255,.08);color:var(--text2)}.bg-t{background:rgba(0,196,167,.15);color:var(--teal)}.bg-pu{background:rgba(167,139,250,.15);color:var(--purple)}
+/* DEADLINE */
+.dl-ok{color:var(--green)}.dl-w{color:var(--amber);font-weight:700}.dl-ov{color:var(--red);font-weight:700}
+/* PROGRESS */
+.pb{height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;margin-top:3px}
+.pf{height:100%;border-radius:2px;background:var(--teal);transition:width .4s}
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(5px);z-index:1000;display:none;align-items:center;justify-content:center;padding:14px}
+.mo.open{display:flex}
+.modal{background:var(--navy2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:760px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow);animation:su .22s ease}
+.modal.sm{max-width:430px}
+@keyframes su{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mh{padding:16px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.mh h2{font-size:15px;font-weight:800;flex:1}
+.mc{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0 3px;line-height:1}.mc:hover{color:var(--red)}
+.mb{padding:16px 20px}
+.mf{padding:11px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end}
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+.fg label{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.7px}
+.fg input,.fg select,.fg textarea{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:7px;padding:8px 10px;color:var(--text);font-family:'Be Vietnam Pro';font-size:13px;outline:none;transition:border .2s;resize:vertical}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--teal)}
+.fg select option{background:var(--navy2)}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.full{grid-column:1/-1}
+.fst{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--teal);margin:12px 0 7px;padding-bottom:4px;border-bottom:1px solid rgba(0,196,167,.2)}
+/* CHECKLIST */
+.cl{display:flex;flex-direction:column;gap:5px;margin-top:3px}
+.cli{display:flex;align-items:flex-start;gap:9px;padding:8px 11px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:7px}
+.cli.done{opacity:.6}.cli.done .cll{text-decoration:line-through;color:var(--text2)}
+.cli input[type=checkbox]{width:15px;height:15px;accent-color:var(--teal);cursor:pointer;flex-shrink:0;margin-top:2px}
+.cll{font-size:13px;flex:1;cursor:pointer;line-height:1.4}
+.cld{font-size:10px;color:var(--text2);white-space:nowrap}
+/* TIMELINE */
+.tl{position:relative;padding-left:21px}
+.tl::before{content:'';position:absolute;left:5px;top:5px;bottom:5px;width:2px;background:var(--border)}
+.tli{position:relative;margin-bottom:11px;padding:9px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px}
+.tli::before{content:'';position:absolute;left:-18px;top:13px;width:10px;height:10px;border-radius:50%;background:var(--teal);border:2px solid var(--navy2);box-shadow:0 0 0 3px rgba(0,196,167,.2)}
+.tli.pend::before{background:var(--text2);box-shadow:none}
+.tli.ovd::before{background:var(--red);box-shadow:0 0 0 3px rgba(240,82,82,.2)}
+.tld{font-size:10px;color:var(--text2);margin-bottom:2px;font-family:'JetBrains Mono'}
+.tltitle{font-size:13px;font-weight:600}
+.tldesc{font-size:11px;color:var(--text2);margin-top:2px}
+/* TABS */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:12px}
+.tab{padding:7px 13px;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.tab:hover{color:var(--text)}.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+.tp{display:none}.tp.active{display:block}
+/* ALERT */
+.ab{padding:9px 12px;border-radius:7px;font-size:13px;display:flex;align-items:flex-start;gap:9px;margin-bottom:9px}
+.aw{background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:var(--amber)}
+.ad{background:rgba(240,82,82,.1);border:1px solid rgba(240,82,82,.3);color:var(--red)}
+.ai{background:rgba(96,165,250,.1);border:1px solid rgba(96,165,250,.3);color:var(--blue)}
+.as{background:rgba(49,196,141,.1);border:1px solid rgba(49,196,141,.3);color:var(--green)}
+/* ASSIGN ROW */
+.ar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;margin-bottom:6px;cursor:pointer;transition:all .2s}
+.ar:hover{background:rgba(0,196,167,.07);border-color:rgba(0,196,167,.25)}
+.ar.sel{background:rgba(0,196,167,.12);border-color:var(--teal)}
+.jav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.jwl{font-size:11px;color:var(--text2)}.jwl span{font-weight:700;font-family:'JetBrains Mono';color:var(--teal)}
+.ron{font-size:11px;color:var(--amber);background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:6px;padding:5px 9px;margin-bottom:10px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="lbox">
+    <div class="llogo">
+      <div class="court">TAND Khu Vực 7 · Ninh Bình</div>
+      <div class="title">Phân hồ sơ & Theo dõi Vụ án</div>
+      <div class="sub">Chọn tài khoản để đăng nhập</div>
+    </div>
+    <div class="laccs" id="laccs"></div>
+    <div class="lpw">
+      <label>Mật khẩu</label>
+      <input type="password" id="lpw" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="lerr" id="lerr">❌ Mật khẩu không đúng</div>
+    <button class="btn btn-p" style="width:100%;padding:11px;font-size:14px;justify-content:center" onclick="doLogin()">Đăng nhập →</button>
+    <div class="lhint">Mỗi tài khoản có mật khẩu riêng. Liên hệ Admin nếu quên mật khẩu.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo"><div class="court">TAND Khu Vực 7</div><div class="sys">Phân hồ sơ & Vụ án</div></div>
+    <div class="sb-user" onclick="doLogout()" title="Đăng xuất">
+      <div class="uav" id="sbAv"></div>
+      <div class="uinfo"><div class="urole" id="sbRole"></div><div class="uname" id="sbName"></div></div>
+      <div class="uout">⏻</div>
+    </div>
+    <nav class="sbnav">
+      <div class="nsec">Tổng quan</div>
+      <div class="ni active" onclick="go('dash')"><span class="ic">📊</span>Bảng tổng quan</div>
+      <div class="ni" onclick="go('don')"><span class="ic">📋</span>Module 1: Xử lý đơn<span class="nb r" id="nb-don">0</span></div>
+      <div class="ni" onclick="go('vuan')"><span class="ic">⚖️</span>Module 2: Lộ trình<span class="nb a" id="nb-vuan">0</span></div>
+      <div class="nsec">Cảnh báo</div>
+      <div class="ni" onclick="go('cb')"><span class="ic">🔔</span>Thời hạn sắp hết<span class="nb r" id="nb-cb">0</span></div>
+      <div class="nsec" id="adNav" style="display:none">Quản trị (Admin)</div>
+      <div class="ni" id="niPC" onclick="go('pc')" style="display:none"><span class="ic">🗂️</span>Phân công hồ sơ<span class="nb r" id="nb-pc">0</span></div>
+      <div class="ni" id="niTP" onclick="go('tp')" style="display:none"><span class="ic">👨‍⚖️</span>Quản lý Thẩm phán</div>
+    </nav>
+    <div style="padding:8px 14px;border-top:1px solid var(--border)">
+      <button class="btn btn-s" style="width:100%;font-size:11px;justify-content:center" onclick="om_cpw()">🔑 Đổi mật khẩu</button>
+    </div>
+    <div class="sbfoot">Ninh Bình · v1.1 · <span id="todayStr"></span></div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="tbtitle" id="ptitle">Bảng tổng quan</div>
+      <div id="tbActions" style="display:flex;gap:8px"></div>
+    </div>
+    <div class="content" id="mc"></div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL: ADD DON -->
+<div class="mo" id="m-don">
+  <div class="modal">
+    <div class="mh"><h2>📋 Thêm đơn khởi kiện mới</h2><button class="mc" onclick="cm('m-don')">✕</button></div>
+    <div class="mb">
+      <div class="fst">Thông tin đơn</div>
+      <div class="fg2">
+        <div class="fg"><label>Số đơn / Mã hồ sơ</label><input id="f-sd" placeholder="01/2026/DS-ST"/></div>
+        <div class="fg"><label>Ngày nhận đơn</label><input type="date" id="f-nn"/></div>
+        <div class="fg"><label>Loại vụ án</label>
+          <select id="f-l"><option value="DS">Dân sự</option><option value="HS">Hình sự</option><option value="HC">Hành chính</option><option value="KDTM">Kinh doanh-TM</option><option value="LD">Lao động</option><option value="HN">Hôn nhân & GĐ</option></select>
+        </div>
+        <div class="fg"><label>Module</label>
+          <select id="f-m"><option value="don">Module 1 – Xử lý đơn</option><option value="vuan">Module 2 – Lộ trình</option></select>
+        </div>
+        <div class="fg"><label>Nguyên đơn</label><input id="f-nd" placeholder="Họ tên nguyên đơn"/></div>
+        <div class="fg"><label>Bị đơn</label><input id="f-bd" placeholder="Họ tên bị đơn"/></div>
+        <div class="fg"><label>Thời hạn giải quyết (ngày)</label><input type="number" id="f-th" value="30" min="1"/></div>
+        <div class="fg"><label>Mức độ ưu tiên</label>
+          <select id="f-ut"><option value="normal">🟢 Bình thường</option><option value="high">🟠 Ưu tiên cao</option><option value="urgent">🔴 Khẩn cấp</option></select>
+        </div>
+        <div class="fg full"><label>Nội dung tóm tắt</label><textarea id="f-noidung" rows="3" placeholder="Mô tả ngắn..."></textarea></div>
+      </div>
+      <div class="fst">Phân công Thẩm phán</div>
+      <div id="f-al"></div>
+    </div>
+    <div class="mf"><button class="btn btn-s" onclick="cm('m-don')">Hủy</button><button class="btn btn-p" onclick="addDon()">✓ Lưu đơn</button></div>
+  </div>
+</div>
+
+<!-- MODAL: DETAIL -->
+<div class="mo" id="m-dt">
+  <div class="modal" style="max-width:800px">
+    <div class="mh"><div style="flex:1"><h2 id="dt-t"></h2><div style="font-size:12px;color:var(--text2);margin-top:2px" id="dt-s"></div></div><button class="mc" onclick="cm('m-dt')">✕</button></div>
+    <div class="mb" id="dt-b"></div>
+    <div class="mf"><button class="btn btn-s" onclick="cm('m-dt')">Đóng</button><button class="btn btn-p" onclick="saveDt()">💾 Lưu ghi chú</button></div>
+  </div>
+</div>
+
+<!-- MODAL: ASSIGN -->
+<div class="mo" id="m-as">
+  <div class="modal sm">
+    <div class="mh"><h2>🗂️ Phân công Thẩm phán</h2><button class="mc" onclick="cm('m-as')">✕</button></div>
+    <div class="mb" id="as-b"></div>
+    <div class="mf"><button class="btn btn-s" onclick="cm('m-as')">Hủy</button><button class="btn btn-p" onclick="confirmAssign()">✓ Xác nhận</button></div>
+  </div>
+</div>
+
+<!-- MODAL: ADD TP -->
+<div class="mo" id="m-tp">
+  <div class="modal sm">
+    <div class="mh"><h2>👨‍⚖️ Thêm Thẩm phán</h2><button class="mc" onclick="cm('m-tp')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label>Họ và tên</label><input id="tp-n" placeholder="Nguyễn Văn A"/></div>
+      <div class="fg"><label>Chức danh</label><select id="tp-r"><option>Chánh án</option><option>Phó Chánh án</option><option selected>Thẩm phán</option><option>Thẩm phán dự bị</option></select></div>
+      <div class="fg"><label>Chuyên trách</label><select id="tp-s"><option value="">Tất cả loại án</option><option value="DS">Dân sự</option><option value="HS">Hình sự</option><option value="HC">Hành chính</option><option value="KDTM">KDTM</option></select></div>
+      <div class="fg"><label>Mật khẩu đăng nhập</label><input type="password" id="tp-pw" placeholder="tand2026"/></div>
+      <div class="fg"><label>Quyền Admin</label><select id="tp-adm"><option value="no">Không (Thẩm phán)</option><option value="yes">Có (Admin)</option></select></div>
+      <div class="fg"><label>Màu nhận diện</label><input type="color" id="tp-c" value="#60a5fa" style="height:36px;padding:4px"/></div>
+    </div>
+    <div class="mf"><button class="btn btn-s" onclick="cm('m-tp')">Hủy</button><button class="btn btn-p" onclick="addTP()">✓ Thêm</button></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════ DATA ═══════════════════════════════
+const DEF = {
+  accounts:[
+    {id:'admin',name:'Nguyễn Văn Hòa',role:'Chánh án',isAdmin:true,pw:'admin123',color:'#00c4a7',jid:'tp1'},
+    {id:'u2',name:'Trần Thị Lan',role:'Thẩm phán',isAdmin:false,pw:'lan@2026',color:'#60a5fa',jid:'tp2'},
+    {id:'u3',name:'Lê Minh Tuấn',role:'Thẩm phán',isAdmin:false,pw:'tuan@2026',color:'#f5a623',jid:'tp3'},
+    {id:'u4',name:'Phạm Thị Thu',role:'Thẩm phán',isAdmin:false,pw:'thu@2026',color:'#f05252',jid:'tp4'},
+    {id:'u5',name:'Hoàng Văn Dũng',role:'Phó Chánh án',isAdmin:true,pw:'dung@adm',color:'#a78bfa',jid:'tp5'},
+  ],
+  judges:[
+    {id:'tp1',name:'Nguyễn Văn Hòa',role:'Chánh án',spec:'',color:'#00c4a7'},
+    {id:'tp2',name:'Trần Thị Lan',role:'Thẩm phán',spec:'DS',color:'#60a5fa'},
+    {id:'tp3',name:'Lê Minh Tuấn',role:'Thẩm phán',spec:'HS',color:'#f5a623'},
+    {id:'tp4',name:'Phạm Thị Thu',role:'Thẩm phán',spec:'HC',color:'#f05252'},
+    {id:'tp5',name:'Hoàng Văn Dũng',role:'Phó Chánh án',spec:'',color:'#a78bfa'},
+  ],
+  cases:[
+    {id:'c1',soDon:'01/2026/DS-ST',loai:'DS',ngayNhan:'2026-01-05',nguyenDon:'Nguyễn Thị Hoa',biDon:'Trần Văn Bình',tjid:'tp2',thoiHan:30,uuTien:'normal',ts:'dangXuLy',noiDung:'Tranh chấp hợp đồng mua bán đất đai 500m².',ghiChu:'Đã nộp đủ tạm ứng án phí.',mod:'don',
+      cl:[{id:'a1',t:'Nhận và kiểm tra đơn',done:true,at:'2026-01-05'},{id:'a2',t:'Thông báo nộp tạm ứng án phí',done:true,at:'2026-01-07'},{id:'a3',t:'Ra quyết định thụ lý',done:true,at:'2026-01-10'},{id:'a4',t:'Xác minh thu thập chứng cứ',done:false,at:null},{id:'a5',t:'Hòa giải lần 1',done:false,at:null},{id:'a6',t:'Đưa vụ án ra xét xử',done:false,at:null}]},
+    {id:'c2',soDon:'02/2026/HS-ST',loai:'HS',ngayNhan:'2026-01-08',nguyenDon:'VKSND',biDon:'Lê Văn Toàn',tjid:'tp3',thoiHan:45,uuTien:'urgent',ts:'dangXuLy',noiDung:'Trộm cắp tài sản 85 triệu đồng.',ghiChu:'',mod:'vuan',
+      cl:[{id:'b1',t:'Nhận hồ sơ từ VKS',done:true,at:'2026-01-08'},{id:'b2',t:'Nghiên cứu hồ sơ',done:true,at:'2026-01-12'},{id:'b3',t:'Ra quyết định đưa vụ án ra xét xử',done:false,at:null},{id:'b4',t:'Phiên tòa xét xử',done:false,at:null},{id:'b5',t:'Tuyên án và lập biên bản',done:false,at:null}]},
+    {id:'c3',soDon:'03/2026/DS-ST',loai:'DS',ngayNhan:'2025-12-15',nguyenDon:'Công ty CP Minh Long',biDon:'Trần Văn Hải',tjid:'tp2',thoiHan:30,uuTien:'high',ts:'quaHan',noiDung:'Tranh chấp thuê nhà, nợ 45 triệu.',ghiChu:'Bị đơn chưa có mặt.',mod:'don',
+      cl:[{id:'c1i',t:'Nhận và kiểm tra đơn',done:true,at:'2025-12-15'},{id:'c2i',t:'Thụ lý vụ án',done:true,at:'2025-12-18'},{id:'c3i',t:'Thu thập chứng cứ',done:true,at:'2025-12-28'},{id:'c4i',t:'Hòa giải',done:false,at:null},{id:'c5i',t:'Xét xử',done:false,at:null}]},
+    {id:'c4',soDon:'04/2026/HC-ST',loai:'HC',ngayNhan:'2026-02-01',nguyenDon:'Nguyễn Văn Phong',biDon:'UBND huyện Yên Khánh',tjid:'tp4',thoiHan:60,uuTien:'normal',ts:'dangXuLy',noiDung:'Khiếu kiện quyết định thu hồi đất.',ghiChu:'',mod:'vuan',
+      cl:[{id:'d1',t:'Nhận đơn và hồ sơ',done:true,at:'2026-02-01'},{id:'d2',t:'Thông báo thụ lý',done:true,at:'2026-02-05'},{id:'d3',t:'Đối thoại các bên',done:false,at:null},{id:'d4',t:'Chuẩn bị phiên xét xử',done:false,at:null},{id:'d5',t:'Phiên tòa xét xử',done:false,at:null},{id:'d6',t:'Ban hành bản án',done:false,at:null}]},
+    {id:'c5',soDon:'05/2026/HN-ST',loai:'HN',ngayNhan:'2026-02-10',nguyenDon:'Nguyễn Thị Mai',biDon:'Trần Văn Nam',tjid:'',thoiHan:30,uuTien:'normal',ts:'dauGiai',noiDung:'Ly hôn, tranh chấp nuôi con và tài sản.',ghiChu:'',mod:'don',
+      cl:[{id:'e1',t:'Nhận đơn và xác định điều kiện',done:true,at:'2026-02-10'},{id:'e2',t:'Hòa giải tại tòa',done:false,at:null},{id:'e3',t:'Xét xử và tuyên án',done:false,at:null}]},
+  ]
+};
+
+let S = JSON.parse(localStorage.getItem('tand_v2')||'null') || JSON.parse(JSON.stringify(DEF));
+let session=null, curPage='dash', curDetailId=null, assignId=null, assignJid=null, newDonJid='';
+
+const save=()=>{localStorage.setItem('tand_v2',JSON.stringify(S));updBadges()};
+const today=()=>new Date().toISOString().slice(0,10);
+const fmt=d=>{if(!d)return'—';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`};
+const ini=n=>n?n.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase():'?';
+const gj=id=>S.judges.find(j=>j.id===id);
+const jload=id=>S.cases.filter(c=>c.tjid===id&&c.ts!=='hoangTat').length;
+const pr=c=>{const t=c.cl.length,d=c.cl.filter(x=>x.done).length;return{d,t,p:t?Math.round(d/t*100):0}};
+const isAdmin=()=>session&&session.isAdmin;
+const myJid=()=>session?session.jid:null;
+
+function dlDays(nn,th){const e=new Date(nn);e.setDate(e.getDate()+parseInt(th));return Math.ceil((e-new Date())/(864e5))}
+function dlLabel(nn,th){const d=dlDays(nn,th);if(d<0)return`<span class="dl-ov">🔴 Quá ${Math.abs(d)} ngày</span>`;if(d<=7)return`<span class="dl-w">⚠ Còn ${d} ngày</span>`;return`<span class="dl-ok">Còn ${d} ngày</span>`}
+function stB(s){const m={dauGiai:['bg-b','Đang thụ lý'],dangXuLy:['bg-a','Đang xử lý'],quaHan:['bg-r','Quá hạn'],hoangTat:['bg-g','Hoàn tất'],dinh:['bg-x','Đình chỉ']};const[c,l]=m[s]||['bg-x',s];return`<span class="badge ${c}">${l}</span>`}
+function loaiB(l){const m={DS:'bg-b',HS:'bg-r',HC:'bg-a',KDTM:'bg-t',LD:'bg-g',HN:'bg-x'};return`<span class="badge ${m[l]||'bg-x'}">${l}</span>`}
+function utB(u){if(u==='urgent')return'<span class="badge bg-r">🔴 Khẩn</span>';if(u==='high')return'<span class="badge bg-a">🟠 Cao</span>';return'<span class="badge bg-x">🟢 Thường</span>'}
+
+function autoStatus(){S.cases.forEach(c=>{if(c.ts==='hoangTat'||c.ts==='dinh')return;if(dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='quaHan')c.ts='quaHan'})}
+
+// ═══════════════ LOGIN ═══════════════
+function renderLogin(){
+  document.getElementById('laccs').innerHTML=S.accounts.map(a=>`
+    <div class="lacc" id="la-${a.id}" onclick="selAcc('${a.id}')">
+      <div class="lav" style="background:${a.color}22;color:${a.color}">${ini(a.name)}</div>
+      <div><div class="lan">${a.name}</div><div class="lar">${a.role}</div></div>
+      <span class="labg ${a.isAdmin?'admin':'judge'}">${a.isAdmin?'🛡️ Admin':'⚖️ Thẩm phán'}</span>
+    </div>`).join('');
+}
+let selAccId=null;
+function selAcc(id){selAccId=id;document.querySelectorAll('.lacc').forEach(b=>b.classList.remove('sel'));document.getElementById('la-'+id)?.classList.add('sel');document.getElementById('lpw').focus()}
+function doLogin(){
+  const err=document.getElementById('lerr');err.style.display='none';
+  if(!selAccId){err.textContent='❌ Vui lòng chọn tài khoản';err.style.display='block';return}
+  const pw=document.getElementById('lpw').value;
+  const acc=S.accounts.find(a=>a.id===selAccId);
+  if(!acc||acc.pw!==pw){err.style.display='block';return}
+  session=acc;
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  initApp();
+}
+function doLogout(){
+  session=null;selAccId=null;
+  document.getElementById('lpw').value='';
+  document.querySelectorAll('.lacc').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('appScreen').style.display='none';
+}
+
+// ═══════════════ APP INIT ═══════════════
+function initApp(){
+  autoStatus();save();
+  const av=document.getElementById('sbAv');
+  av.textContent=ini(session.name);av.style.background=session.color+'22';av.style.color=session.color;
+  document.getElementById('sbName').textContent=session.name;
+  document.getElementById('sbRole').textContent=session.isAdmin?'🛡️ Quản trị viên':'⚖️ Thẩm phán';
+  ['adNav','niPC','niTP'].forEach(id=>document.getElementById(id).style.display=isAdmin()?'block':'none');
+  document.getElementById('niPC').style.display=isAdmin()?'flex':'none';
+  document.getElementById('niTP').style.display=isAdmin()?'flex':'none';
+  const d=new Date();document.getElementById('todayStr').textContent=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+  go('dash');
+}
+
+// ═══════════════ NAV ═══════════════
+function go(page){
+  curPage=page;
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const m={dash:0,don:1,vuan:2,cb:3,pc:4,tp:5};
+  document.querySelectorAll('.ni')[m[page]]?.classList.add('active');
+  const titles={dash:'Bảng tổng quan',don:'Module 1 – Xử lý đơn khởi kiện',vuan:'Module 2 – Lộ trình giải quyết vụ án',cb:'Cảnh báo thời hạn',pc:'Phân công hồ sơ',tp:'Quản lý Thẩm phán'};
+  document.getElementById('ptitle').textContent=titles[page]||page;
+  // topbar actions
+  let tbHtml='';
+  if(isAdmin()&&['dash','don','vuan','pc'].includes(page))tbHtml+=`<button class="btn btn-s" onclick="om('m-don')">➕ Thêm đơn mới</button>`;
+  if(isAdmin())tbHtml+=`<button class="btn btn-p" onclick="expCSV()">📤 Xuất CSV</button>`;
+  document.getElementById('tbActions').innerHTML=tbHtml;
+  renderPage(page);
+}
+
+function updBadges(){
+  let cs=isAdmin()?S.cases:S.cases.filter(c=>c.tjid===myJid());
+  const un=S.cases.filter(c=>!c.tjid&&c.ts!=='hoangTat').length;
+  document.getElementById('nb-don').textContent=cs.filter(c=>c.mod==='don'&&c.ts!=='hoangTat').length;
+  document.getElementById('nb-vuan').textContent=cs.filter(c=>c.mod==='vuan'&&c.ts!=='hoangTat').length;
+  document.getElementById('nb-cb').textContent=cs.filter(c=>dlDays(c.ngayNhan,c.thoiHan)<=7&&c.ts!=='hoangTat').length;
+  const pcel=document.getElementById('nb-pc');if(pcel)pcel.textContent=un;
+}
+
+// ═══════════════ PAGES ═══════════════
+function renderPage(p){
+  const el=document.getElementById('mc');
+  if(p==='dash')el.innerHTML=renderDash();
+  else if(p==='don')el.innerHTML=renderList('don');
+  else if(p==='vuan')el.innerHTML=renderList('vuan');
+  else if(p==='cb')el.innerHTML=renderCB();
+  else if(p==='pc')el.innerHTML=renderPC();
+  else if(p==='tp')el.innerHTML=renderTP();
+}
+
+// DASHBOARD
+function renderDash(){
+  const cs=isAdmin()?S.cases:S.cases.filter(c=>c.tjid===myJid());
+  const total=cs.length,dang=cs.filter(c=>c.ts!=='hoangTat').length;
+  const qh=cs.filter(c=>dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='hoangTat').length;
+  const sh=cs.filter(c=>{const d=dlDays(c.ngayNhan,c.thoiHan);return d>=0&&d<=7&&c.ts!=='hoangTat'}).length;
+  const un=isAdmin()?S.cases.filter(c=>!c.tjid&&c.ts!=='hoangTat'):[];
+  const warns=cs.filter(c=>dlDays(c.ngayNhan,c.thoiHan)<=14&&c.ts!=='hoangTat').sort((a,b)=>dlDays(a.ngayNhan,a.thoiHan)-dlDays(b.ngayNhan,b.thoiHan)).slice(0,6);
+
+  const leftBlock=isAdmin()?`
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;letter-spacing:.5px">PHÂN CÔNG THẨM PHÁN</div>
+      ${S.judges.map(j=>{
+        const oa=S.cases.filter(c=>c.tjid===j.id),done=oa.filter(c=>c.ts==='hoangTat').length,act=oa.filter(c=>c.ts!=='hoangTat').length;
+        return`<div style="display:flex;align-items:center;gap:11px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;margin-bottom:7px">
+          <div class="jav" style="background:${j.color}22;color:${j.color}">${ini(j.name)}</div>
+          <div style="flex:1">
+            <div style="font-size:13px;font-weight:700">${j.name} <span style="font-size:10px;color:var(--text2)">${j.role}</span></div>
+            <div style="font-size:11px;color:var(--text2)">Đang xử lý: <b style="color:${j.color}">${act}</b> · Hoàn tất: <b>${done}</b></div>
+            <div class="pb"><div class="pf" style="width:${oa.length?Math.round(done/oa.length*100):0}%;background:${j.color}"></div></div>
+          </div>
+          <span class="badge" style="background:${j.color}18;color:${j.color}">${act}</span>
+        </div>`;
+      }).join('')}
+      ${un.length?`<div class="ab aw" style="cursor:pointer" onclick="go('pc')">⚠️ <span><b>${un.length} hồ sơ</b> chưa phân công → <u>Phân công ngay</u></span></div>`:''}
+    </div>` : `
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px">HỒ SƠ CỦA TÔI</div>
+      ${cs.filter(c=>c.ts!=='hoangTat').map(c=>{const r=pr(c);return`
+        <div style="padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;margin-bottom:7px;cursor:pointer" onclick="openDt('${c.id}')">
+          <div style="display:flex;justify-content:space-between">
+            <span style="font-size:13px;font-weight:700">${c.soDon}</span>
+            <span style="font-size:11px;color:var(--text2)">${r.d}/${r.t} bước</span>
+          </div>
+          <div style="font-size:11px;color:var(--text2);margin:2px 0">${c.nguyenDon} vs ${c.biDon}</div>
+          <div class="pb"><div class="pf" style="width:${r.p}%"></div></div>
+        </div>`}).join('')||'<div style="color:var(--text2);font-size:13px;padding:10px 0">Không có hồ sơ đang xử lý.</div>'}
+    </div>`;
+
+  const wrows=warns.map(c=>{const j=gj(c.tjid),d=dlDays(c.ngayNhan,c.thoiHan);return`
+    <tr onclick="openDt('${c.id}')">
+      <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td>
+      <td>${j?`<span style="color:${j.color};font-weight:600">${j.name}</span>`:'<span style="color:var(--red);font-size:11px">Chưa phân công</span>'}</td>
+      <td>${d<0?`<span class="dl-ov">Quá ${Math.abs(d)}n</span>`:`<span class="dl-w">⚠ ${d}n</span>`}</td>
+    </tr>`}).join('')||`<tr><td colspan="5" style="text-align:center;padding:18px;color:var(--text2)">✅ Không có cảnh báo</td></tr>`;
+
+  return`
+  <div class="srow">
+    <div class="sc"><div class="si si-t">📁</div><div><div class="sv">${total}</div><div class="sl">Tổng hồ sơ</div></div></div>
+    <div class="sc"><div class="si si-a">⚖️</div><div><div class="sv">${dang}</div><div class="sl">Đang xử lý</div></div></div>
+    <div class="sc"><div class="si si-r">🚨</div><div><div class="sv" style="color:${qh?'var(--red)':'inherit'}">${qh}</div><div class="sl">Đã quá hạn</div></div></div>
+    <div class="sc"><div class="si si-b">🔔</div><div><div class="sv" style="color:${sh?'var(--amber)':'inherit'}">${sh}</div><div class="sl">Sắp hết hạn</div></div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    ${leftBlock}
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px">VỤ ÁN CẦN CHÚ Ý</div>
+      <div class="tw"><table>
+        <thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Thẩm phán</th><th>Thời hạn</th></tr></thead>
+        <tbody>${wrows}</tbody>
+      </table></div>
+    </div>
+  </div>`;
+}
+
+// LIST
+function renderList(mod){
+  const fs=document.getElementById('fl-s')?.value?.toLowerCase()||'';
+  const fj=document.getElementById('fl-j')?.value||'';
+  const fst=document.getElementById('fl-st')?.value||'';
+  const fl=document.getElementById('fl-l')?.value||'';
+  let cs=S.cases.filter(c=>c.mod===mod);
+  if(!isAdmin())cs=cs.filter(c=>c.tjid===myJid());
+  if(fs)cs=cs.filter(c=>c.soDon.toLowerCase().includes(fs)||c.nguyenDon.toLowerCase().includes(fs)||c.biDon.toLowerCase().includes(fs));
+  if(fj&&isAdmin())cs=cs.filter(c=>c.tjid===fj);
+  if(fst)cs=cs.filter(c=>c.ts===fst);
+  if(fl)cs=cs.filter(c=>c.loai===fl);
+  const jopts=isAdmin()?S.judges.map(j=>`<option value="${j.id}">${j.name}</option>`).join(''):'';
+  const rows=cs.length?cs.map(c=>{
+    const j=gj(c.tjid),r=pr(c);
+    return`<tr onclick="openDt('${c.id}')">
+      <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td>
+      <td>${j?`<span style="color:${j.color};font-weight:600">${j.name}</span>`:'<span style="color:var(--red);font-size:11px">⚠ Chưa phân công</span>'}</td>
+      <td>${stB(c.ts)}</td>
+      <td><div style="font-size:10px;color:var(--text2)">${r.d}/${r.t}</div><div class="pb"><div class="pf" style="width:${r.p}%"></div></div></td>
+      <td>${utB(c.uuTien)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
+    </tr>`}).join(''):`<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text2)">📂 Không có hồ sơ nào</td></tr>`;
+  return`
+  <div class="fbar">
+    <input id="fl-s" placeholder="🔍 Tìm số hồ sơ, nguyên đơn..." onkeyup="renderPage('${mod}')"/>
+    ${isAdmin()?`<span class="fl">Thẩm phán:</span><select id="fl-j" onchange="renderPage('${mod}')"><option value="">Tất cả</option>${jopts}</select>`:''}
+    <span class="fl">Loại:</span>
+    <select id="fl-l" onchange="renderPage('${mod}')"><option value="">Tất cả</option><option value="DS">DS</option><option value="HS">HS</option><option value="HC">HC</option><option value="KDTM">KDTM</option><option value="LD">LD</option><option value="HN">HN</option></select>
+    <span class="fl">Trạng thái:</span>
+    <select id="fl-st" onchange="renderPage('${mod}')"><option value="">Tất cả</option><option value="dauGiai">Đang thụ lý</option><option value="dangXuLy">Đang xử lý</option><option value="quaHan">Quá hạn</option><option value="hoangTat">Hoàn tất</option></select>
+    <span style="margin-left:auto;font-size:11px;color:var(--text2)">${cs.length} hồ sơ</span>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Thẩm phán</th><th>Trạng thái</th><th>Tiến độ</th><th>Ưu tiên</th><th>Thời hạn</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+// PHÂN CÔNG
+function renderPC(){
+  if(!isAdmin())return'<div class="ab ad">🚫 Chỉ Admin mới có quyền.</div>';
+  const un=S.cases.filter(c=>!c.tjid&&c.ts!=='hoangTat');
+  const as=S.cases.filter(c=>c.tjid&&c.ts!=='hoangTat');
+  const unRows=un.length?un.map(c=>`<tr>
+    <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td><td>${utB(c.uuTien)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
+    <td><button class="btn btn-p btn-sm" onclick="openAs('${c.id}');event.stopPropagation()">📌 Phân công</button></td>
+  </tr>`).join(''):`<tr><td colspan="7" style="text-align:center;padding:18px;color:var(--green)">✅ Tất cả hồ sơ đã được phân công</td></tr>`;
+  const asRows=as.map(c=>{const j=gj(c.tjid);return`<tr onclick="openDt('${c.id}')">
+    <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td>
+    <td>${j?`<span style="color:${j.color};font-weight:600">${j.name}</span>`:''}</td>
+    <td>${stB(c.ts)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
+    <td><button class="btn btn-s btn-sm" onclick="openAs('${c.id}');event.stopPropagation()">✏️ Đổi</button></td>
+  </tr>`}).join('');
+  return`
+  ${un.length?`<div class="ab aw">⚠️ Có <b>${un.length} hồ sơ</b> chưa phân công Thẩm phán. Hãy phân công để bắt đầu xử lý.</div>`:''}
+  <div style="font-size:13px;font-weight:800;margin-bottom:7px;color:var(--red)">⏳ CHƯA PHÂN CÔNG (${un.length})</div>
+  <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Ưu tiên</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${unRows}</tbody></table></div>
+  <div style="font-size:13px;font-weight:800;margin-bottom:7px;color:var(--teal)">✅ ĐÃ PHÂN CÔNG (${as.length})</div>
+  <div class="tw"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Thẩm phán</th><th>Trạng thái</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${asRows}</tbody></table></div>`;
+}
+
+// ASSIGN MODAL
+function openAs(id){
+  assignId=id;assignJid=S.cases.find(c=>c.id===id)?.tjid||null;
+  renderAsBody();om('m-as');
+}
+function renderAsBody(){
+  const c=S.cases.find(x=>x.id===assignId);
+  document.getElementById('as-b').innerHTML=`
+    <div style="padding:9px 11px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700">${c.soDon} · ${loaiB(c.loai)}</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:2px">${c.nguyenDon} vs ${c.biDon} · ${dlLabel(c.ngayNhan,c.thoiHan)}</div>
+    </div>
+    <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:7px">Chọn Thẩm phán</div>
+    ${S.judges.map(j=>{const wl=jload(j.id),sel=assignJid===j.id;return`
+      <div class="ar ${sel?'sel':''}" onclick="selAsJudge('${j.id}')">
+        <div class="jav" style="background:${j.color}22;color:${j.color}">${ini(j.name)}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700">${j.name}</div>
+          <div class="jwl">${j.role}${j.spec?' · '+j.spec:''} · Đang xử lý: <span>${wl}</span> vụ</div>
+        </div>
+        ${sel?'<span class="badge bg-t">✓ Đã chọn</span>':''}
+      </div>`}).join('')}`;
+}
+function selAsJudge(id){assignJid=id;renderAsBody()}
+function confirmAssign(){
+  if(!assignId)return;
+  const c=S.cases.find(x=>x.id===assignId);
+  if(c){c.tjid=assignJid||'';if(c.ts==='dauGiai'&&assignJid)c.ts='dangXuLy';save();cm('m-as');renderPage(curPage)}
+}
+
+// CẢNH BÁO
+function renderCB(){
+  let cs=isAdmin()?S.cases:S.cases.filter(c=>c.tjid===myJid());
+  const all=cs.filter(c=>c.ts!=='hoangTat').map(c=>({...c,days:dlDays(c.ngayNhan,c.thoiHan)})).sort((a,b)=>a.days-b.days);
+  const ov=all.filter(c=>c.days<0),sn=all.filter(c=>c.days>=0&&c.days<=7),ok=all.filter(c=>c.days>7);
+  const row=(c,tp)=>{const j=gj(c.tjid),msg=c.days<0?`Quá ${Math.abs(c.days)} ngày`:`Còn ${c.days} ngày`;
+    return`<div class="ab ${tp==='ov'?'ad':tp==='sn'?'aw':'ai'}" style="cursor:pointer" onclick="openDt('${c.id}')">
+      <span style="font-size:17px">${tp==='ov'?'🚨':tp==='sn'?'⚠️':'📅'}</span>
+      <div style="flex:1"><div style="font-weight:700">${c.soDon} · ${c.nguyenDon} vs ${c.biDon}</div>
+        <div style="font-size:12px;opacity:.8;margin-top:2px">${j?j.name:'Chưa phân công'} · ${msg} · Nhận: ${fmt(c.ngayNhan)}</div>
+      </div>
+      <span class="badge ${tp==='ov'?'bg-r':tp==='sn'?'bg-a':'bg-b'}">${msg}</span>
+    </div>`};
+  return`
+    ${ov.length?`<div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:7px">🚨 ĐÃ QUÁ HẠN (${ov.length})</div>${ov.map(c=>row(c,'ov')).join('')}`:''}
+    ${sn.length?`<div style="font-size:12px;font-weight:700;color:var(--amber);margin:14px 0 7px">⚠️ SẮP HẾT HẠN – 7 NGÀY (${sn.length})</div>${sn.map(c=>row(c,'sn')).join('')}`:''}
+    ${ok.length?`<div style="font-size:12px;font-weight:700;color:var(--blue);margin:14px 0 7px">📅 TRONG TẦM KIỂM SOÁT (${ok.length})</div>${ok.map(c=>row(c,'ok')).join('')}`:''}
+    ${!ov.length&&!sn.length?'<div class="ab as">✅ Tất cả vụ án đang trong thời hạn.</div>':''}`;
+}
+
+// THẨM PHÁN
+function renderTP(){
+  if(!isAdmin())return'<div class="ab ad">🚫 Chỉ Admin mới có quyền.</div>';
+  const cards=S.judges.map(j=>{
+    const oa=S.cases.filter(c=>c.tjid===j.id),done=oa.filter(c=>c.ts==='hoangTat').length,act=oa.filter(c=>c.ts!=='hoangTat').length,warn=oa.filter(c=>dlDays(c.ngayNhan,c.thoiHan)<=7&&c.ts!=='hoangTat').length;
+    const acc=S.accounts.find(a=>a.jid===j.id);
+    return`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;border-top:3px solid ${j.color}">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
+        <div class="jav" style="width:44px;height:44px;font-size:16px;background:${j.color}22;color:${j.color}">${ini(j.name)}</div>
+        <div>
+          <div style="font-size:14px;font-weight:800">${j.name}</div>
+          <div style="font-size:11px;color:var(--text2)">${j.role}${j.spec?' · '+j.spec:''}</div>
+          ${acc?`<span class="badge ${acc.isAdmin?'bg-t':'bg-b'}" style="margin-top:3px">${acc.isAdmin?'🛡️ Admin':'⚖️ Thẩm phán'}</span>`:''}
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px">
+        <div style="text-align:center;padding:7px;background:rgba(255,255,255,.04);border-radius:7px">
+          <div style="font-size:17px;font-weight:900;color:${j.color};font-family:'JetBrains Mono'">${act}</div>
+          <div style="font-size:10px;color:var(--text2)">Đang xử lý</div>
+        </div>
+        <div style="text-align:center;padding:7px;background:rgba(255,255,255,.04);border-radius:7px">
+          <div style="font-size:17px;font-weight:900;color:var(--green);font-family:'JetBrains Mono'">${done}</div>
+          <div style="font-size:10px;color:var(--text2)">Hoàn tất</div>
+        </div>
+        <div style="text-align:center;padding:7px;background:rgba(255,255,255,.04);border-radius:7px">
+          <div style="font-size:17px;font-weight:900;color:${warn?'var(--red)':'var(--text2)'};font-family:'JetBrains Mono'">${warn}</div>
+          <div style="font-size:10px;color:var(--text2)">Sắp hết hạn</div>
+        </div>
+      </div>
+      <div style="font-size:10px;color:var(--text2);margin-bottom:2px">Hoàn thành: ${oa.length?Math.round(done/oa.length*100):0}%</div>
+      <div class="pb"><div class="pf" style="background:${j.color};width:${oa.length?Math.round(done/oa.length*100):0}%"></div></div>
+      <button class="btn btn-s btn-sm" style="margin-top:10px;width:100%;justify-content:center" onclick="openResetPw('${j.id}')">🔑 Reset mật khẩu</button>
+    </div>`;
+  }).join('');
+  return`<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-p" onclick="om('m-tp')">➕ Thêm Thẩm phán</button></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:13px">${cards}</div>`;
+}
+
+// DETAIL MODAL
+function openDt(id){
+  const c=S.cases.find(x=>x.id===id);if(!c)return;
+  curDetailId=id;
+  const j=gj(c.tjid),r=pr(c),days=dlDays(c.ngayNhan,c.thoiHan);
+  const canEdit=isAdmin()||c.tjid===myJid();
+  document.getElementById('dt-t').textContent=`${c.soDon} — ${c.nguyenDon} vs ${c.biDon}`;
+  document.getElementById('dt-s').textContent=`${c.loai} · Nhận ${fmt(c.ngayNhan)} · ${j?j.name:'Chưa phân công'}`;
+  let ah='';
+  if(days<0)ah=`<div class="ab ad">🚨 <strong>ĐÃ QUÁ HẠN ${Math.abs(days)} NGÀY!</strong> Cần xử lý khẩn cấp.</div>`;
+  else if(days<=7)ah=`<div class="ab aw">⚠️ Còn <strong>${days} ngày</strong> để giải quyết.</div>`;
+  if(!canEdit)ah+=`<div class="ron">👁️ Bạn chỉ có thể xem hồ sơ này (không được phân công cho bạn).</div>`;
+  const clHtml=c.cl.map(item=>`
+    <div class="cli ${item.done?'done':''}" id="cli-${item.id}">
+      <input type="checkbox" id="chk-${item.id}" ${item.done?'checked':''} ${canEdit?'':'disabled'} onchange="togChk('${id}','${item.id}')">
+      <label class="cll" for="chk-${item.id}">${item.t}</label>
+      <span class="cld">${item.done?'✓ '+fmt(item.at):''}</span>
+    </div>`).join('');
+  const tlHtml=c.cl.map((item,i)=>`
+    <div class="tli ${item.done?'':(days<0?'ovd':'pend')}">
+      <div class="tld">Bước ${i+1}${item.done?' · '+fmt(item.at):''}</div>
+      <div class="tltitle">${item.t}</div>
+      ${!item.done?'<div class="tldesc">Chưa thực hiện</div>':''}
+    </div>`).join('');
+  const jOpts=S.judges.map(jj=>`<option value="${jj.id}" ${c.tjid===jj.id?'selected':''}>${jj.name}</option>`).join('');
+  document.getElementById('dt-b').innerHTML=`
+    ${ah}
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px">
+      <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:9px;text-align:center"><div style="font-size:19px;font-weight:900;color:var(--teal);font-family:'JetBrains Mono'">${r.p}%</div><div style="font-size:10px;color:var(--text2)">Tiến độ</div></div>
+      <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:9px;text-align:center"><div style="font-size:19px;font-weight:900;color:${days<0?'var(--red)':days<=7?'var(--amber)':'var(--green)'};font-family:'JetBrains Mono'">${Math.abs(days)}</div><div style="font-size:10px;color:var(--text2)">${days<0?'Ngày quá hạn':'Ngày còn lại'}</div></div>
+      <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:9px;text-align:center"><div style="font-size:19px;font-weight:900;font-family:'JetBrains Mono'">${r.d}/${r.t}</div><div style="font-size:10px;color:var(--text2)">Bước xong</div></div>
+      <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:9px;text-align:center">${utB(c.uuTien)}<div style="font-size:10px;color:var(--text2);margin-top:3px">Ưu tiên</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="swTab(this,'tp-cl')">✅ Checklist</div>
+      <div class="tab" onclick="swTab(this,'tp-tl')">🗺 Lộ trình</div>
+      <div class="tab" onclick="swTab(this,'tp-info')">📄 Thông tin</div>
+    </div>
+    <div class="tp active" id="tp-cl">
+      <div class="cl">${clHtml}</div>
+      <div style="margin-top:10px">
+        <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:5px">Ghi chú Thẩm phán</div>
+        <textarea id="gcInput" rows="3" ${canEdit?'':'readonly'} style="width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:7px;padding:8px 10px;color:var(--text);font-family:'Be Vietnam Pro';font-size:13px;outline:none;resize:vertical" placeholder="Ghi chú...">${c.ghiChu||''}</textarea>
+      </div>
+    </div>
+    <div class="tp" id="tp-tl"><div class="tl">${tlHtml}</div></div>
+    <div class="tp" id="tp-info">
+      <div class="fg2">
+        <div class="fg"><label>Số hồ sơ</label><input value="${c.soDon}" readonly style="opacity:.65"></div>
+        <div class="fg"><label>Loại</label><input value="${c.loai}" readonly style="opacity:.65"></div>
+        <div class="fg"><label>Nguyên đơn</label><input value="${c.nguyenDon}" readonly style="opacity:.65"></div>
+        <div class="fg"><label>Bị đơn</label><input value="${c.biDon}" readonly style="opacity:.65"></div>
+        <div class="fg"><label>Ngày nhận</label><input value="${fmt(c.ngayNhan)}" readonly style="opacity:.65"></div>
+        <div class="fg"><label>Thời hạn (ngày)</label><input value="${c.thoiHan}" readonly style="opacity:.65"></div>
+        ${isAdmin()?`
+        <div class="fg"><label>Phân công Thẩm phán</label>
+          <select onchange="qReas('${c.id}',this.value)"><option value="">-- Chưa --</option>${jOpts}</select>
+        </div>
+        <div class="fg"><label>Trạng thái</label>
+          <select onchange="qStat('${c.id}',this.value)">
+            <option value="dauGiai" ${c.ts==='dauGiai'?'selected':''}>Đang thụ lý</option>
+            <option value="dangXuLy" ${c.ts==='dangXuLy'?'selected':''}>Đang xử lý</option>
+            <option value="quaHan" ${c.ts==='quaHan'?'selected':''}>Quá hạn</option>
+            <option value="hoangTat" ${c.ts==='hoangTat'?'selected':''}>Hoàn tất</option>
+            <option value="dinh" ${c.ts==='dinh'?'selected':''}>Đình chỉ</option>
+          </select>
+        </div>`:''}
+        <div class="fg full"><label>Nội dung</label><textarea rows="3" readonly style="opacity:.65">${c.noiDung}</textarea></div>
+      </div>
+    </div>`;
+  om('m-dt');
+}
+
+function swTab(el,tid){const ctx=el.closest('.mb');ctx.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');ctx.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));document.getElementById(tid).classList.add('active')}
+function togChk(cid,iid){const c=S.cases.find(x=>x.id===cid);if(!c)return;const canEdit=isAdmin()||c.tjid===myJid();if(!canEdit)return;const item=c.cl.find(x=>x.id===iid);if(!item)return;item.done=!item.done;item.at=item.done?today():null;const el=document.getElementById('cli-'+iid);if(el){el.classList.toggle('done',item.done);el.querySelector('.cld').textContent=item.done?'✓ '+fmt(item.at):''}save();renderPage(curPage)}
+function saveDt(){if(!curDetailId)return;const c=S.cases.find(x=>x.id===curDetailId);if(!c)return;const g=document.getElementById('gcInput');if(g)c.ghiChu=g.value;save();cm('m-dt');renderPage(curPage)}
+function qReas(id,jid){const c=S.cases.find(x=>x.id===id);if(c){c.tjid=jid;save()}}
+function qStat(id,s){const c=S.cases.find(x=>x.id===id);if(c){c.ts=s;save()}}
+
+// ADD DON
+function om(id){
+  document.getElementById(id).classList.add('open');
+  if(id==='m-don'){document.getElementById('f-nn').value=today();renderAlList();newDonJid=''}
+}
+function cm(id){document.getElementById(id).classList.remove('open')}
+document.querySelectorAll('.mo').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open')}));
+
+function renderAlList(){
+  document.getElementById('f-al').innerHTML=S.judges.map(j=>{const wl=jload(j.id);return`
+    <div class="ar" id="ar-${j.id}" onclick="selNewJ('${j.id}')">
+      <div class="jav" style="background:${j.color}22;color:${j.color}">${ini(j.name)}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700">${j.name}</div>
+        <div class="jwl">${j.role}${j.spec?' · '+j.spec:''} · Đang xử lý: <span>${wl}</span> vụ</div>
+      </div>
+    </div>`}).join('')}
+
+function selNewJ(id){newDonJid=id;document.querySelectorAll('#f-al .ar').forEach(r=>r.classList.remove('sel'));document.getElementById('ar-'+id)?.classList.add('sel')}
+
+function addDon(){
+  const sd=document.getElementById('f-sd').value.trim();if(!sd){alert('Vui lòng nhập số đơn');return}
+  const t=Date.now();
+  S.cases.push({id:'c'+t,soDon:sd,loai:document.getElementById('f-l').value,ngayNhan:document.getElementById('f-nn').value||today(),nguyenDon:document.getElementById('f-nd').value,biDon:document.getElementById('f-bd').value,tjid:newDonJid,thoiHan:parseInt(document.getElementById('f-th').value)||30,uuTien:document.getElementById('f-ut').value,ts:newDonJid?'dangXuLy':'dauGiai',noiDung:document.getElementById('f-noidung').value,ghiChu:'',mod:document.getElementById('f-m').value,
+    cl:[{id:'n'+t+'1',t:'Nhận và kiểm tra đơn',done:false,at:null},{id:'n'+t+'2',t:'Thông báo nộp tạm ứng án phí',done:false,at:null},{id:'n'+t+'3',t:'Ra quyết định thụ lý / trả đơn',done:false,at:null},{id:'n'+t+'4',t:'Xác minh thu thập chứng cứ',done:false,at:null},{id:'n'+t+'5',t:'Hòa giải các bên',done:false,at:null},{id:'n'+t+'6',t:'Đưa vụ án ra xét xử',done:false,at:null},{id:'n'+t+'7',t:'Ban hành bản án / quyết định',done:false,at:null}]});
+  newDonJid='';save();cm('m-don');renderPage(curPage);
+}
+
+// ADD TP
+function addTP(){
+  const n=document.getElementById('tp-n').value.trim();if(!n){alert('Vui lòng nhập họ tên');return}
+  const id='tp'+Date.now(),color=document.getElementById('tp-c').value,isAdm=document.getElementById('tp-adm').value==='yes';
+  S.judges.push({id,name:n,role:document.getElementById('tp-r').value,spec:document.getElementById('tp-s').value,color});
+  S.accounts.push({id:'u'+Date.now(),name:n,role:document.getElementById('tp-r').value,isAdmin:isAdm,pw:document.getElementById('tp-pw').value||'tand2026',color,jid:id});
+  save();cm('m-tp');renderPage(curPage);renderLogin();
+}
+
+// EXPORT
+function expCSV(){
+  const rows=[['Số hồ sơ','Loại','Nguyên đơn','Bị đơn','Thẩm phán','Trạng thái','Ngày nhận','Thời hạn','Tiến độ']];
+  S.cases.forEach(c=>{const j=gj(c.tjid),r=pr(c);rows.push([c.soDon,c.loai,c.nguyenDon,c.biDon,j?j.name:'',c.ts,c.ngayNhan,c.thoiHan,`${r.d}/${r.t}`])});
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.map(v=>`"${v}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));a.download=`BaoCao_TAND_${today()}.csv`;a.click();
+}
+
+
+// ─── ĐỔI MẬT KHẨU (bản thân) ───
+function om_cpw(){
+  document.getElementById('cpw-name').textContent = session.name;
+  document.getElementById('cpw-old').value='';
+  document.getElementById('cpw-new').value='';
+  document.getElementById('cpw-cf').value='';
+  document.getElementById('cpw-err').style.display='none';
+  document.getElementById('cpw-ok').style.display='none';
+  om('m-cpw');
+}
+function doChangePw(){
+  const old=document.getElementById('cpw-old').value;
+  const nw=document.getElementById('cpw-new').value;
+  const cf=document.getElementById('cpw-cf').value;
+  const errEl=document.getElementById('cpw-err');
+  const okEl=document.getElementById('cpw-ok');
+  errEl.style.display='none'; okEl.style.display='none';
+  if(old !== session.pw){errEl.textContent='❌ Mật khẩu hiện tại không đúng';errEl.style.display='block';return}
+  if(nw.length<6){errEl.textContent='❌ Mật khẩu mới phải ít nhất 6 ký tự';errEl.style.display='block';return}
+  if(nw!==cf){errEl.textContent='❌ Xác nhận mật khẩu không khớp';errEl.style.display='block';return}
+  const acc=S.accounts.find(a=>a.id===session.id);
+  if(acc){acc.pw=nw; session.pw=nw; save();}
+  okEl.style.display='block';
+  setTimeout(()=>cm('m-cpw'),1500);
+}
+
+// ─── RESET MẬT KHẨU (Admin) ───
+let resetJid=null;
+function openResetPw(jid){
+  if(!isAdmin())return;
+  resetJid=jid;
+  const acc=S.accounts.find(a=>a.jid===jid);
+  document.getElementById('rpw-name').textContent=acc?acc.name:'';
+  document.getElementById('rpw-new').value='';
+  document.getElementById('rpw-cf').value='';
+  document.getElementById('rpw-err').style.display='none';
+  document.getElementById('rpw-ok').style.display='none';
+  om('m-rpw');
+}
+function doResetPw(){
+  const nw=document.getElementById('rpw-new').value;
+  const cf=document.getElementById('rpw-cf').value;
+  const errEl=document.getElementById('rpw-err');
+  const okEl=document.getElementById('rpw-ok');
+  errEl.style.display='none'; okEl.style.display='none';
+  if(nw.length<6){errEl.textContent='❌ Mật khẩu phải ít nhất 6 ký tự';errEl.style.display='block';return}
+  if(nw!==cf){errEl.textContent='❌ Xác nhận mật khẩu không khớp';errEl.style.display='block';return}
+  const acc=S.accounts.find(a=>a.jid===resetJid);
+  if(acc){acc.pw=nw; save();}
+  okEl.style.display='block';
+  setTimeout(()=>cm('m-rpw'),1500);
+}
+
+// BOOT
+renderLogin();
+</script>
+
+<!-- MODAL: ĐỔI MẬT KHẨU (bản thân) -->
+<div class="mo" id="m-cpw">
+  <div class="modal sm">
+    <div class="mh"><h2>🔑 Đổi mật khẩu</h2><button class="mc" onclick="cm('m-cpw')">✕</button></div>
+    <div class="mb">
+      <div class="ab ai" style="margin-bottom:12px">ℹ️ Đổi mật khẩu tài khoản <b id="cpw-name"></b></div>
+      <div class="fg"><label>Mật khẩu hiện tại</label><input type="password" id="cpw-old" placeholder="Nhập mật khẩu hiện tại"/></div>
+      <div class="fg"><label>Mật khẩu mới</label><input type="password" id="cpw-new" placeholder="Tối thiểu 6 ký tự"/></div>
+      <div class="fg"><label>Xác nhận mật khẩu mới</label><input type="password" id="cpw-cf" placeholder="Nhập lại mật khẩu mới"/></div>
+      <div class="lerr" id="cpw-err" style="text-align:left;margin-bottom:0">❌</div>
+      <div style="display:none;color:var(--green);font-size:13px;font-weight:600;margin-top:6px" id="cpw-ok">✅ Đổi mật khẩu thành công!</div>
+    </div>
+    <div class="mf"><button class="btn btn-s" onclick="cm('m-cpw')">Đóng</button><button class="btn btn-p" onclick="doChangePw()">💾 Lưu mật khẩu</button></div>
+  </div>
+</div>
+
+<!-- MODAL: RESET MẬT KHẨU (Admin) -->
+<div class="mo" id="m-rpw">
+  <div class="modal sm">
+    <div class="mh"><h2>🔑 Reset mật khẩu Thẩm phán</h2><button class="mc" onclick="cm('m-rpw')">✕</button></div>
+    <div class="mb">
+      <div class="ab aw" style="margin-bottom:12px">⚠️ Admin đang reset mật khẩu cho <b id="rpw-name"></b></div>
+      <div class="fg"><label>Mật khẩu mới</label><input type="password" id="rpw-new" placeholder="Nhập mật khẩu mới cho Thẩm phán"/></div>
+      <div class="fg"><label>Xác nhận</label><input type="password" id="rpw-cf" placeholder="Nhập lại mật khẩu"/></div>
+      <div class="lerr" id="rpw-err" style="text-align:left;margin-bottom:0">❌</div>
+      <div style="display:none;color:var(--green);font-size:13px;font-weight:600;margin-top:6px" id="rpw-ok">✅ Reset mật khẩu thành công!</div>
+    </div>
+    <div class="mf"><button class="btn btn-s" onclick="cm('m-rpw')">Đóng</button><button class="btn btn-p" onclick="doResetPw()">🔑 Reset mật khẩu</button></div>
+  </div>
+</div>
+</body>
+</html>
