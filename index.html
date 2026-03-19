@@ -229,6 +229,11 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
           <select id="f-ut"><option value="normal">🟢 Bình thường</option><option value="high">🟠 Ưu tiên cao</option><option value="urgent">🔴 Khẩn cấp</option></select>
         </div>
         <div class="fg full"><label>Nội dung tóm tắt</label><textarea id="f-noidung" rows="3" placeholder="Mô tả ngắn..."></textarea></div>
+        <div class="fg full" style="flex-direction:row;align-items:center;gap:10px;padding:10px 12px;background:rgba(167,139,250,.06);border:1px solid rgba(167,139,250,.25);border-radius:8px">
+          <input type="checkbox" id="f-hgdt" style="width:16px;height:16px;accent-color:#a78bfa;cursor:pointer;flex-shrink:0"/>
+          <label for="f-hgdt" style="font-size:13px;font-weight:600;cursor:pointer;color:var(--purple)">🤝 Đây là đơn Hòa giải đối thoại</label>
+          <span style="font-size:11px;color:var(--text2);margin-left:4px">(sẽ hiển thị nhãn riêng khi phân công)</span>
+        </div>
       </div>
       <div class="fst">Phân công Thẩm phán</div>
       <div id="f-al"></div>
@@ -601,7 +606,14 @@ function selAsJudge(id){assignJid=id;renderAsBody()}
 function confirmAssign(){
   if(!assignId)return;
   const c=S.cases.find(x=>x.id===assignId);
-  if(c){c.tjid=assignJid||'';if(c.ts==='dauGiai'&&assignJid)c.ts='dangXuLy';save();cm('m-as');renderPage(curPage)}
+  if(c){
+    c.tjid=assignJid||'';
+    if(c.ts==='dauGiai'&&assignJid){
+      c.ts='dangXuLy';
+      if(c.mod==='don') c.thoiHan=8; // default 8 days for Module 1 assignment
+    }
+    save();cm('m-as');renderPage(curPage);
+  }
 }
 
 // CẢNH BÁO
@@ -819,7 +831,7 @@ function qStat(id,s){const c=S.cases.find(x=>x.id===id);if(c){c.ts=s;save()}}
 // ADD DON
 function om(id){
   document.getElementById(id).classList.add('open');
-  if(id==='m-don'){document.getElementById('f-nn').value=today();renderAlList();newDonJid=''}
+  if(id==='m-don'){document.getElementById('f-nn').value=today();renderAlList();newDonJid='';const hgdt=document.getElementById('f-hgdt');if(hgdt)hgdt.checked=false;}
 }
 function cm(id){document.getElementById(id).classList.remove('open')}
 document.querySelectorAll('.mo').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open')}));
@@ -854,7 +866,8 @@ function addDon(){
     {id:'n'+t+'5',t:'Ra QĐ công nhận (hòa giải / đối thoại thành)',done:false,at:null,type:'finish_b'},
     {id:'n'+t+'6',t:'Tuyên án / ban hành bản án',done:false,at:null,type:'normal'},
   ];
-  S.cases.push({id:'c'+t,soDon:sd,loai:document.getElementById('f-l').value,ngayNhan:document.getElementById('f-nn').value||today(),nguyenDon:document.getElementById('f-nd').value,biDon:document.getElementById('f-bd').value,tjid:newDonJid,thoiHan:parseInt(document.getElementById('f-th').value)||30,uuTien:document.getElementById('f-ut').value,ts:newDonJid?'dangXuLy':'dauGiai',noiDung:document.getElementById('f-noidung').value,ghiChu:'',mod,donXong:false,soThuLy:'',ngayThuLy:'',cl:mod==='don'?clDon:clVuan});
+  const hgdt = document.getElementById('f-hgdt')?.checked||false;
+  S.cases.push({id:'c'+t,soDon:sd,loai:document.getElementById('f-l').value,ngayNhan:document.getElementById('f-nn').value||today(),nguyenDon:document.getElementById('f-nd').value,biDon:document.getElementById('f-bd').value,tjid:newDonJid,thoiHan:parseInt(document.getElementById('f-th').value)||(mod==='don'?8:30),uuTien:document.getElementById('f-ut').value,ts:newDonJid?'dangXuLy':'dauGiai',noiDung:document.getElementById('f-noidung').value,ghiChu:'',mod,donXong:false,soThuLy:'',ngayThuLy:'',hoaGiaiDoiThoai:hgdt,cl:mod==='don'?clDon:clVuan});
   newDonJid='';save();cm('m-don');renderPage(curPage);
 }
 
@@ -923,16 +936,22 @@ let thuLyJid = null;
 function openThuLy(cid){
   if(!isAdmin()) return;
   thuLyId = cid; thuLyJid = null;
-  const c = S.cases.find(x=>x.id===cid);
-  const finalItem = c.cl.find(x=>x.type==='final'&&x.done);
+  const cs = S.cases.find(x=>x.id===cid);
+  const finalItem = cs.cl.find(x=>x.type==='final_queue'&&x.done);
+  const prevJudge = S.judges.find(j=>j.id===cs._prevTjid) || S.judges.find(j=>j.id===cs.tjid);
   document.getElementById('thuly-info').innerHTML=`
-    <div style="margin-bottom:4px"><b>${c.soDon}</b> · ${loaiB(c.loai)}</div>
-    <div style="color:var(--text2)">${c.nguyenDon} vs ${c.biDon}</div>
+    <div style="margin-bottom:4px"><b>${cs.soDon}</b> · ${loaiB(cs.loai)} ${cs.hoaGiaiDoiThoai?'<span class="badge bg-pu">🤝 Hòa giải đối thoại</span>':''}  </div>
+    <div style="color:var(--text2)">${cs.nguyenDon} vs ${cs.biDon}</div>
     <div style="margin-top:4px">Kết quả xử lý đơn: <b style="color:var(--teal)">${finalItem?finalItem.t:'—'}</b></div>`;
-  document.getElementById('tl-so').value='';
-  document.getElementById('tl-ngay').value=today();
-  document.getElementById('tl-thoihan').value='30';
-  // Render judge list
+  document.getElementById('tl-tp-chuyen').value = prevJudge ? prevJudge.name : '';
+  document.getElementById('tl-ngay-nhan-tp').value = finalItem?.at || today();
+  document.getElementById('tl-so').value = '';
+  document.getElementById('tl-ngay').value = today();
+  const DMAP = {DS:120,HN:120,LD:120,HC:120,KDTM:60};
+  const defDays = DMAP[cs.loai] || 120;
+  document.getElementById('tl-thoihan').value = defDays;
+  const hint = document.getElementById('tl-thoihan-hint');
+  if(hint) hint.textContent = `(${cs.loai}: mặc định ${defDays} ngày)`;
   document.getElementById('tl-judges').innerHTML = S.judges.map(j=>{
     const wl=jload(j.id);
     return`<div class="ar" id="tlj-${j.id}" onclick="selThuLyJudge('${j.id}')">
@@ -960,9 +979,11 @@ function submitThuLy(){
   const c = S.cases.find(x=>x.id===thuLyId);
   if(!c) return;
   // Move to module 2
+  c._prevTjid = c.tjid; // save Module 1 judge for reference
+  c._prevJudgeName = document.getElementById('tl-tp-chuyen').value;
   c.soThuLy = so;
   c.ngayThuLy = ngay;
-  c.thoiHan = parseInt(document.getElementById('tl-thoihan').value)||30;
+  c.thoiHan = parseInt(document.getElementById('tl-thoihan').value)||120;
   c.tjid = thuLyJid||'';
   c.mod = 'vuan';
   c.ts = thuLyJid ? 'dangXuLy' : 'dauGiai';
@@ -1076,9 +1097,11 @@ renderLogin();
       <div class="ab ai" style="margin-bottom:14px">Admin nhập thông tin thụ lý và phân công Thẩm phán cho vụ án chuyển sang Module 2.</div>
       <div id="thuly-info" style="padding:10px 12px;background:rgba(255,255,255,.04);border-radius:8px;margin-bottom:12px;font-size:13px"></div>
       <div class="fg2">
+        <div class="fg"><label>Thẩm phán đã chuyển đơn (Module 1)</label><input id="tl-tp-chuyen" placeholder="Tên Thẩm phán xem xét đơn" readonly style="opacity:.8;background:rgba(0,196,167,.06);border-color:rgba(0,196,167,.3)"/></div>
+        <div class="fg"><label>Ngày nhận đơn từ Thẩm phán</label><input type="date" id="tl-ngay-nhan-tp"/></div>
         <div class="fg"><label>Số thụ lý</label><input id="tl-so" placeholder="VD: 01/2026/TLDS"/></div>
         <div class="fg"><label>Ngày thụ lý</label><input type="date" id="tl-ngay"/></div>
-        <div class="fg full"><label>Thời hạn giải quyết (ngày)</label><input type="number" id="tl-thoihan" value="30" min="1"/></div>
+        <div class="fg full"><label>Thời hạn giải quyết (ngày) <span id="tl-thoihan-hint" style="color:var(--teal);font-size:10px"></span></label><input type="number" id="tl-thoihan" value="120" min="1"/></div>
       </div>
       <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:8px">Phân công Thẩm phán xét xử</div>
       <div id="tl-judges"></div>
