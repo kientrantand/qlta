@@ -404,9 +404,23 @@ const LOAI_GROUP={
   'KDTM':'mix','LD':'mix','HC':'mix','XLHC':'mix','MGHS':'mix'
 };
 // Get allowed loan types for current session from account.allowedLoai
+// Group → loai defaults (fallback if allowedLoai missing)
+const GROUP_LOAI_DEF={
+  'ds':  ['DS','MGTHADN'],
+  'hngd':['HN'],
+  'mix': ['KDTM','LD','HC','XLHC','MGHS'],
+  'hs':  ['HS'],
+  '':    ['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS']
+};
+
 function myAllowedLoai(){
   if(isSuperAdmin()) return ['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS'];
-  return (session.allowedLoai||[]);
+  // If allowedLoai exists and non-empty, use it
+  if(session.allowedLoai && session.allowedLoai.length>0) return session.allowedLoai;
+  // Fallback: derive from role + group (handles old localStorage data)
+  if(isChanh()) return ['HS'];
+  if(isPCA()) return GROUP_LOAI_DEF[session.group||'']||[];
+  return [];
 }
 // Check if current session can assign a case by loai
 function canAssignLoai(loai){
@@ -425,11 +439,26 @@ function assignableCases(){
 
 function dlDays(nn,th){const e=new Date(nn);e.setDate(e.getDate()+parseInt(th));return Math.ceil((e-new Date())/(864e5))}
 function dlLabel(nn,th){const d=dlDays(nn,th);if(d<0)return`<span class="dl-ov">🔴 Quá ${Math.abs(d)} ngày</span>`;if(d<=7)return`<span class="dl-w">⚠ Còn ${d} ngày</span>`;return`<span class="dl-ok">Còn ${d} ngày</span>`}
-function stB(s){const m={dauGiai:['bg-b','Đang thụ lý'],dangXuLy:['bg-a','Đang xử lý'],quaHan:['bg-r','Quá hạn'],hoangTat:['bg-g','Hoàn tất'],dinh:['bg-x','Đình chỉ'],tamDinh:['bg-amber','⏸ Tạm đình chỉ'],choThuLy:['bg-pu','⏳ Chờ Admin thụ lý'],donXongM1:['bg-g','✅ Đơn đã xử lý xong']};const[cv,l]=m[s]||['bg-x',s];return`<span class="badge ${cv}">${l}</span>`}
+function stB(s){const m={dauGiai:['bg-b','Đang thụ lý'],dangXuLy:['bg-a','Đang xử lý'],quaHan:['bg-r','Quá hạn'],hoangTat:['bg-g','Hoàn tất'],dinh:['bg-x','Đình chỉ'],tamDinh:['bg-amber','⏸ Tạm đình chỉ'],choThuLy:['bg-pu','⏳ Chờ lãnh đạo thụ lý'],donXongM1:['bg-g','✅ Đơn đã xử lý xong']};const[cv,l]=m[s]||['bg-x',s];return`<span class="badge ${cv}">${l}</span>`}
 function loaiB(l){const m={DS:'bg-b',HS:'bg-r',HC:'bg-a',KDTM:'bg-t',LD:'bg-g',HN:'bg-x',XLHC:'bg-a',MGTHADN:'bg-pu',MGHS:'bg-pu'};const label={MGTHADN:'MGTHADN',MGHS:'MGHS-Treo',XLHC:'XLHC'};return`<span class="badge ${m[l]||'bg-x'}">${label[l]||l}</span>`}
 function utB(u){if(u==='urgent')return'<span class="badge bg-r">🔴 Khẩn</span>';if(u==='high')return'<span class="badge bg-a">🟠 Cao</span>';return'<span class="badge bg-x">🟢 Thường</span>'}
 
-function autoStatus(){S.cases.forEach(c=>{if(['hoangTat','dinh','tamDinh','choThuLy','donXongM1'].includes(c.ts))return;if(dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='quaHan')c.ts='quaHan'})}
+function autoStatus(){
+  // Migrate old accounts: patch missing allowedLoai field
+  S.accounts.forEach(acc=>{
+    if(!acc.allowedLoai || acc.allowedLoai.length===0){
+      if(acc.role==='chanh_an') acc.allowedLoai=['HS'];
+      else if(acc.role==='pho_chanh_an'){
+        const def={'ds':['DS','MGTHADN'],'hngd':['HN'],'mix':['KDTM','LD','HC','XLHC','MGHS']};
+        acc.allowedLoai=def[acc.group||'']||[];
+      }
+    }
+  });
+  S.cases.forEach(c=>{
+    if(['hoangTat','dinh','tamDinh','choThuLy','donXongM1'].includes(c.ts))return;
+    if(dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='quaHan')c.ts='quaHan';
+  });
+}
 
 // ═══════════════ LOGIN ═══════════════
 function renderLogin(){
@@ -798,7 +827,7 @@ function openDt(id){
   document.getElementById('dt-t').textContent=`${c.soDon} — ${c.nguyenDon} vs ${c.biDon}`;
   document.getElementById('dt-s').textContent=`${c.loai} · Nhận ${fmt(c.ngayNhan)} · ${j?j.name:'Chưa phân công'}`;
   let ah='';
-  if(c.ts==='choThuLy') ah=`<div class="ab" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--purple)">📬 Đơn đã được đề xuất thụ lý, đang chờ Admin phân công Thẩm phán giải quyết.${isAdmin()?` <b style="cursor:pointer;text-decoration:underline" onclick="cm('m-dt');openThuLy('${c.id}')">→ Thụ lý ngay</b>`:''}</div>`;
+  if(c.ts==='choThuLy') ah=`<div class="ab" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);color:var(--purple)">📬 Đơn đã được đề xuất thụ lý, đang chờ lãnh đạo phân công Thẩm phán giải quyết.${isAdmin()?` <b style="cursor:pointer;text-decoration:underline" onclick="cm('m-dt');openThuLy('${c.id}')">→ Thụ lý ngay</b>`:''}</div>`;
   else if(c.ts==='donXongM1'){const fi=c.cl.find(x=>(x.type==='final_end')&&x.done);ah=`<div class="ab as">✅ Đơn đã được xử lý xong: <b>${fi?fi.t:'—'}</b>. Không chuyển sang thụ lý.</div>`;}
   else if(days<0)ah=`<div class="ab ad">🚨 <strong>ĐÃ QUÁ HẠN ${Math.abs(days)} NGÀY!</strong> Cần xử lý khẩn cấp.</div>`;
   else if(days<=7)ah=`<div class="ab aw">⚠️ Còn <strong>${days} ngày</strong> để giải quyết.</div>`;
@@ -900,7 +929,7 @@ function openDt(id){
             <option value="dauGiai" ${c.ts==='dauGiai'?'selected':''}>Đang thụ lý</option>
             <option value="dangXuLy" ${c.ts==='dangXuLy'?'selected':''}>Đang xử lý</option>
             <option value="quaHan" ${c.ts==='quaHan'?'selected':''}>Quá hạn</option>
-            <option value="choThuLy" ${c.ts==='choThuLy'?'selected':''}>⏳ Chờ Admin thụ lý</option>
+            <option value="choThuLy" ${c.ts==='choThuLy'?'selected':''}>⏳ Chờ lãnh đạo thụ lý</option>
             <option value="donXongM1" ${c.ts==='donXongM1'?'selected':''}>✅ Đơn đã xử lý xong</option>
             <option value="hoangTat" ${c.ts==='hoangTat'?'selected':''}>Hoàn tất</option>
             <option value="dinh" ${c.ts==='dinh'?'selected':''}>Đình chỉ</option>
@@ -1401,7 +1430,10 @@ function doResetPw(){
       session = JSON.parse(saved);
       // Re-sync account from store in case permissions changed
       const acc = S.accounts.find(a=>a.id===session.id);
-      if(acc){ session=acc; }
+      if(acc){ 
+        // Sync any updated fields (e.g. allowedLoai added by migration)
+        session=Object.assign({}, session, acc);
+      }
       document.getElementById('loginScreen').style.display='none';
       document.getElementById('appScreen').style.display='block';
       initApp();
