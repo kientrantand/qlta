@@ -16,7 +16,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--navy);color:var(--
 .llogo .court{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--teal);font-weight:700}
 .llogo .title{font-size:19px;font-weight:900;margin-top:4px}
 .llogo .sub{font-size:12px;color:var(--text2);margin-top:6px}
-.laccs{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;max-height:280px;overflow-y:auto}
+.laccs{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;max-height:320px;overflow-y:auto;padding-right:2px}
 .lacc{display:flex;align-items:center;gap:12px;padding:11px 14px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
 .lacc:hover{background:rgba(0,196,167,.07);border-color:rgba(0,196,167,.25)}
 .lacc.sel{background:rgba(0,196,167,.12);border-color:var(--teal)}
@@ -167,7 +167,10 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
     </div>
     <div class="lerr" id="lerr">❌ Mật khẩu không đúng</div>
     <button class="btn btn-p" style="width:100%;padding:11px;font-size:14px;justify-content:center" onclick="doLogin()">Đăng nhập →</button>
-    <div class="lhint">Mỗi tài khoản có mật khẩu riêng. Liên hệ Admin nếu quên mật khẩu.</div>
+    <div class="lhint">Mỗi tài khoản có mật khẩu riêng. Liên hệ Quản trị viên nếu quên mật khẩu.</div>
+    <div style="margin-top:10px;text-align:center">
+      <button onclick="resetStore()" style="background:none;border:none;color:var(--text2);font-size:10px;cursor:pointer;text-decoration:underline;font-family:'Be Vietnam Pro'">⚙️ Khôi phục dữ liệu mặc định (nếu không chọn được tài khoản)</button>
+    </div>
   </div>
 </div>
 
@@ -375,7 +378,17 @@ const DEF = {
   ]
 };
 
-let S = JSON.parse(localStorage.getItem('tand_v2')||'null') || JSON.parse(JSON.stringify(DEF));
+let S = (function(){
+  try {
+    const stored = JSON.parse(localStorage.getItem('tand_v2')||'null');
+    // Validate: must have accounts array with at least 1 entry
+    if(stored && Array.isArray(stored.accounts) && stored.accounts.length > 0 
+       && Array.isArray(stored.cases) && Array.isArray(stored.judges)){
+      return stored;
+    }
+  } catch(e){ console.warn('Store parse error:', e); }
+  return JSON.parse(JSON.stringify(DEF));
+})();
 let session=null, curPage='dash', curDetailId=null, assignId=null, assignJid=null, newDonJid='';
 
 const save=()=>{localStorage.setItem('tand_v2',JSON.stringify(S));updBadges()};
@@ -462,7 +475,13 @@ function autoStatus(){
 
 // ═══════════════ LOGIN ═══════════════
 function renderLogin(){
-  document.getElementById('laccs').innerHTML=S.accounts.map(a=>`
+  const laccsEl = document.getElementById('laccs');
+  if(!laccsEl){ console.error('laccs element not found'); return; }
+  if(!S.accounts || !S.accounts.length){ 
+    laccsEl.innerHTML='<div style="color:var(--red);font-size:13px;text-align:center;padding:12px">⚠️ Lỗi tải dữ liệu tài khoản. Vui lòng nhấn nút Khôi phục bên dưới.</div>';
+    return;
+  }
+  laccsEl.innerHTML=S.accounts.map(a=>`
     <div class="lacc" id="la-${a.id}" onclick="selAcc('${a.id}')">
       <div class="lav" style="background:${a.color}22;color:${a.color}">${ini(a.name)}</div>
       <div><div class="lan">${a.name}</div><div class="lar">${a.role}</div></div>
@@ -1377,6 +1396,18 @@ function confirmFinalItem(cid, iid, type){
   }
 }
 
+
+// ─── RESET STORE (recovery) ───
+function resetStore(){
+  if(confirm('Khôi phục về dữ liệu mặc định? Toàn bộ dữ liệu hiện tại sẽ bị xóa.')){
+    localStorage.removeItem('tand_v2');
+    sessionStorage.removeItem('tand_session');
+    S = JSON.parse(JSON.stringify(DEF));
+    session = null;
+    renderLogin();
+  }
+}
+
 // ─── ĐỔI MẬT KHẨU (bản thân) ───
 function om_cpw(){
   document.getElementById('cpw-name').textContent = session.name;
@@ -1431,25 +1462,27 @@ function doResetPw(){
 }
 
 // BOOT - restore session from sessionStorage if available
-(function(){
-  const saved = sessionStorage.getItem('tand_session');
-  if(saved){
-    try{
-      session = JSON.parse(saved);
-      // Re-sync account from store in case permissions changed
-      const acc = S.accounts.find(a=>a.id===session.id);
-      if(acc){ 
-        // Sync any updated fields (e.g. allowedLoai added by migration)
-        session=Object.assign({}, session, acc);
-      }
-      document.getElementById('loginScreen').style.display='none';
-      document.getElementById('appScreen').style.display='block';
-      initApp();
-      return;
-    } catch(e){ session=null; }
+document.addEventListener('DOMContentLoaded', function(){
+  try {
+    const saved = sessionStorage.getItem('tand_session');
+    if(saved){
+      try{
+        session = JSON.parse(saved);
+        const acc = S.accounts.find(a=>a.id===session.id);
+        if(acc){ session=Object.assign({}, session, acc); }
+        else { session=null; throw new Error('Account not found'); }
+        document.getElementById('loginScreen').style.display='none';
+        document.getElementById('appScreen').style.display='block';
+        initApp();
+        return;
+      } catch(e){ session=null; sessionStorage.removeItem('tand_session'); }
+    }
+    renderLogin();
+  } catch(e){
+    console.error('Boot error:', e);
+    renderLogin();
   }
-  renderLogin();
-})();
+});
 </script>
 
 
