@@ -454,12 +454,14 @@ function doLogin(){
   const acc=S.accounts.find(a=>a.id===selAccId);
   if(!acc||acc.pw!==pw){err.textContent='❌ Mật khẩu không đúng';err.style.display='block';return}
   session=acc;
+  sessionStorage.setItem('tand_session', JSON.stringify(acc));
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
   initApp();
 }
 function doLogout(){
-  session=null;selAccId=null;
+  session=null; selAccId=null;
+  sessionStorage.removeItem('tand_session');
   document.getElementById('lpw').value='';
   document.querySelectorAll('.lacc').forEach(b=>b.classList.remove('sel'));
   document.getElementById('loginScreen').style.display='flex';
@@ -610,9 +612,13 @@ function renderList(mod){
   const jopts=isAdmin()?S.judges.map(j=>`<option value="${j.id}">${j.name}</option>`).join(''):'';
   const rows=cs.length?cs.map(c=>{
     const j=gj(c.tjid),r=pr(c);
+    const showAssignBtn=canAssign()&&canAssignLoai(c.loai);
     return`<tr onclick="openDt('${c.id}')">
       <td class="mono">${c.soDon}${c.hoaGiaiDoiThoai?'<br><span style="font-size:10px;color:var(--purple);font-weight:700">🤝 HG Đối thoại</span>':''}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td>
-      <td>${j?`<span style="color:${j.color};font-weight:600">${j.name}</span>`:'<span style="color:var(--red);font-size:11px">⚠ Chưa phân công</span>'}</td>
+      <td>
+        ${j?`<span style="color:${j.color};font-weight:600">${j.name}</span>`:'<span style="color:var(--red);font-size:11px">⚠ Chưa phân công</span>'}
+        ${showAssignBtn?`<button class="btn btn-s btn-sm" style="margin-left:5px;padding:2px 7px;font-size:10px" onclick="openAs('${c.id}');event.stopPropagation()">📌</button>`:''}
+      </td>
       <td>${stB(c.ts)}</td>
       <td><div style="font-size:10px;color:var(--text2)">${r.d}/${r.t}</div><div class="pb"><div class="pf" style="width:${r.p}%"></div></div></td>
       <td>${utB(c.uuTien)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
@@ -641,8 +647,9 @@ function renderPC(){
   const un=allVisible.filter(c=>!c.tjid&&!['hoangTat','choThuLy','donXongM1'].includes(c.ts));
   const as=allVisible.filter(c=>c.tjid&&!['hoangTat','choThuLy','donXongM1'].includes(c.ts));
   // Role badge for page header
-  const roleInfo=isChanh()?'🏛️ Chánh án – Phân công án Hình sự':
-    isPCA()?`⚖️ Phó Chánh án – Nhóm: ${{'ds':'Dân sự & MGTHADN','hngd':'HN & Gia đình','mix':'KDTM · LĐ · HC · XLHC · MGHS'}[session.group]||session.group}`:'⚙️ Quản trị viên – Toàn quyền';
+  const allowedStr=(session.allowedLoai||[]).join(', ')||'Tất cả';
+  const roleInfo=isChanh()?`🏛️ Chánh án – Phân công: <b>${allowedStr}</b>`:
+    isPCA()?`⚖️ Phó Chánh án – Phân công: <b>${allowedStr}</b>`:`⚙️ Quản trị viên – Toàn quyền`;
   const unRows=un.length?un.map(c=>`<tr>
     <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td><td>${utB(c.uuTien)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
     <td><button class="btn btn-p btn-sm" onclick="openAs('${c.id}');event.stopPropagation()">📌 Phân công</button></td>
@@ -686,7 +693,7 @@ function renderAsBody(){
       <div style="font-size:12px;color:var(--text2);margin-top:2px">${c.nguyenDon} vs ${c.biDon} · ${dlLabel(c.ngayNhan,c.thoiHan)}</div>
     </div>
     <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:7px">Chọn Thẩm phán</div>
-    ${S.judges.map(j=>{const wl=jload(j.id),sel=assignJid===j.id;return`
+    ${S.judges.filter(j=>!j.spec||j.spec===c.loai||isSuperAdmin()).map(j=>{const wl=jload(j.id),sel=assignJid===j.id;return`
       <div class="ar ${sel?'sel':''}" onclick="selAsJudge('${j.id}')">
         <div class="jav" style="background:${j.color}22;color:${j.color}">${ini(j.name)}</div>
         <div style="flex:1">
@@ -1105,7 +1112,8 @@ function openThuLy(cid){
   document.getElementById('tl-thoihan').value = defDays;
   const hint = document.getElementById('tl-thoihan-hint');
   if(hint) hint.textContent = `(${cs.loai}: mặc định ${defDays} ngày)`;
-  document.getElementById('tl-judges').innerHTML = S.judges.map(j=>{
+  const caseForTl=S.cases.find(x=>x.id===thuLyId);
+  document.getElementById('tl-judges').innerHTML = S.judges.filter(j=>!j.spec||!caseForTl||j.spec===caseForTl.loai||isSuperAdmin()).map(j=>{
     const wl=jload(j.id);
     return`<div class="ar" id="tlj-${j.id}" onclick="selThuLyJudge('${j.id}')">
       <div class="jav" style="background:${j.color}22;color:${j.color}">${ini(j.name)}</div>
@@ -1385,8 +1393,23 @@ function doResetPw(){
   setTimeout(()=>cm('m-rpw'),1500);
 }
 
-// BOOT
-renderLogin();
+// BOOT - restore session from sessionStorage if available
+(function(){
+  const saved = sessionStorage.getItem('tand_session');
+  if(saved){
+    try{
+      session = JSON.parse(saved);
+      // Re-sync account from store in case permissions changed
+      const acc = S.accounts.find(a=>a.id===session.id);
+      if(acc){ session=acc; }
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('appScreen').style.display='block';
+      initApp();
+      return;
+    } catch(e){ session=null; }
+  }
+  renderLogin();
+})();
 </script>
 
 
