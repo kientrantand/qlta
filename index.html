@@ -182,14 +182,15 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
       <div class="uout">⏻</div>
     </div>
     <nav class="sbnav">
-      <div class="nsec">Tổng quan</div>
+      <div class="nsec" id="adNav" style="display:none">Phân công</div>
+      <div class="ni" id="niPC" onclick="go('pc')" style="display:none"><span class="ic">🗂️</span>Phân công hồ sơ<span class="nb r" id="nb-pc">0</span></div>
+      <div class="nsec">Theo dõi</div>
       <div class="ni active" onclick="go('dash')"><span class="ic">📊</span>Bảng tổng quan</div>
-      <div class="ni" onclick="go('don')"><span class="ic">📋</span>Module 1: Đơn được phân công xem xét<span class="nb r" id="nb-don">0</span></div>
-      <div class="ni" onclick="go('vuan')"><span class="ic">⚖️</span>Module 2: Vụ án được phân công<span class="nb a" id="nb-vuan">0</span></div>
+      <div class="ni" onclick="go('don')"><span class="ic">📋</span>Module 1: Đơn xem xét<span class="nb r" id="nb-don">0</span></div>
+      <div class="ni" onclick="go('vuan')"><span class="ic">⚖️</span>Module 2: Vụ án<span class="nb a" id="nb-vuan">0</span></div>
       <div class="nsec">Cảnh báo</div>
       <div class="ni" onclick="go('cb')"><span class="ic">🔔</span>Thời hạn sắp hết<span class="nb r" id="nb-cb">0</span></div>
-      <div class="nsec" id="adNav" style="display:none">Quản trị (Admin)</div>
-      <div class="ni" id="niPC" onclick="go('pc')" style="display:none"><span class="ic">🗂️</span>Phân công hồ sơ<span class="nb r" id="nb-pc">0</span></div>
+      <div class="nsec" id="adminSec" style="display:none">Quản trị hệ thống</div>
       <div class="ni" id="niTP" onclick="go('tp')" style="display:none"><span class="ic">👨‍⚖️</span>Quản lý Thẩm phán</div>
     </nav>
     <div style="padding:8px 14px;border-top:1px solid var(--border)">
@@ -217,7 +218,17 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
         <div class="fg"><label>Số đơn / Mã hồ sơ</label><input id="f-sd" placeholder="01/2026/DS-ST"/></div>
         <div class="fg"><label>Ngày nhận đơn</label><input type="date" id="f-nn"/></div>
         <div class="fg"><label>Loại vụ án</label>
-          <select id="f-l"><option value="DS">Dân sự</option><option value="HS">Hình sự</option><option value="HC">Hành chính</option><option value="KDTM">Kinh doanh-TM</option><option value="LD">Lao động</option><option value="HN">Hôn nhân & GĐ</option></select>
+          <select id="f-l">
+          <option value="DS">Dân sự</option>
+          <option value="HS">Hình sự</option>
+          <option value="HC">Hành chính</option>
+          <option value="KDTM">Kinh doanh - TM</option>
+          <option value="LD">Lao động</option>
+          <option value="HN">Hôn nhân & GĐ</option>
+          <option value="XLHC">Xử lý hành chính</option>
+          <option value="MGTHADN">Miễn giảm THADN</option>
+          <option value="MGHS">Miễn giảm HS (Treo/CTKGG)</option>
+        </select>
         </div>
         <div class="fg"><label>Module</label>
           <select id="f-m"><option value="don">Module 1 – Đơn được phân công xem xét</option><option value="vuan">Module 2 – Vụ án được phân công</option></select>
@@ -267,10 +278,23 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
     <div class="mh"><h2>👨‍⚖️ Thêm Thẩm phán</h2><button class="mc" onclick="cm('m-tp')">✕</button></div>
     <div class="mb">
       <div class="fg"><label>Họ và tên</label><input id="tp-n" placeholder="Nguyễn Văn A"/></div>
-      <div class="fg"><label>Chức danh</label><select id="tp-r"><option>Chánh án</option><option>Phó Chánh án</option><option selected>Thẩm phán</option><option>Thẩm phán dự bị</option></select></div>
-      <div class="fg"><label>Chuyên trách</label><select id="tp-s"><option value="">Tất cả loại án</option><option value="DS">Dân sự</option><option value="HS">Hình sự</option><option value="HC">Hành chính</option><option value="KDTM">KDTM</option></select></div>
-      <div class="fg"><label>Mật khẩu đăng nhập</label><input type="password" id="tp-pw" placeholder="tand2026"/></div>
-      <div class="fg"><label>Quyền Admin</label><select id="tp-adm"><option value="no">Không (Thẩm phán)</option><option value="yes">Có (Admin)</option></select></div>
+      <div class="fg"><label>Chức danh hiển thị</label><select id="tp-r"><option>Chánh án</option><option>Phó Chánh án</option><option selected>Thẩm phán</option><option>Thẩm phán dự bị</option></select></div>
+      <div class="fg"><label>Vai trò hệ thống</label>
+        <select id="tp-adm" onchange="toggleGroupField()">
+          <option value="judge">Thẩm phán (chỉ xử lý đơn)</option>
+          <option value="pho_chanh_an">Phó Chánh án (phân công theo nhóm)</option>
+          <option value="chanh_an">Chánh án (phân công HS)</option>
+        </select>
+      </div>
+      <div class="fg" id="grpField" style="display:none"><label>Nhóm phân công (Phó Chánh án)</label>
+        <select id="tp-grp">
+          <option value="ds">Nhóm DS – Dân sự & Miễn giảm THADN</option>
+          <option value="hngd">Nhóm HNGĐ – Hôn nhân & Gia đình</option>
+          <option value="mix">Nhóm MIX – KDTM, LĐ, HC, XLHC, MGHS</option>
+        </select>
+      </div>
+      <div class="fg"><label>Chuyên trách loại án</label><select id="tp-s"><option value="">Tất cả</option><option value="DS">Dân sự</option><option value="HS">Hình sự</option><option value="HC">Hành chính</option><option value="KDTM">KDTM</option><option value="HN">HN & GĐ</option><option value="XLHC">Xử lý hành chính</option><option value="MGTHADN">Miễn giảm THADN</option><option value="MGHS">Miễn giảm HS</option></select></div>
+      <div class="fg"><label>Mật khẩu đăng nhập</label><input type="password" id="tp-pw" placeholder="Nhập mật khẩu"/></div>
       <div class="fg"><label>Màu nhận diện</label><input type="color" id="tp-c" value="#60a5fa" style="height:36px;padding:4px"/></div>
     </div>
     <div class="mf"><button class="btn btn-s" onclick="cm('m-tp')">Hủy</button><button class="btn btn-p" onclick="addTP()">✓ Thêm</button></div>
@@ -281,18 +305,23 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
 // ═══════════════════════════════ DATA ═══════════════════════════════
 const DEF = {
   accounts:[
-    {id:'admin',name:'Nguyễn Văn Hòa',role:'Chánh án',isAdmin:true,pw:'admin123',color:'#00c4a7',jid:'tp1'},
-    {id:'u2',name:'Trần Thị Lan',role:'Thẩm phán',isAdmin:false,pw:'lan@2026',color:'#60a5fa',jid:'tp2'},
-    {id:'u3',name:'Lê Minh Tuấn',role:'Thẩm phán',isAdmin:false,pw:'tuan@2026',color:'#f5a623',jid:'tp3'},
-    {id:'u4',name:'Phạm Thị Thu',role:'Thẩm phán',isAdmin:false,pw:'thu@2026',color:'#f05252',jid:'tp4'},
-    {id:'u5',name:'Hoàng Văn Dũng',role:'Phó Chánh án',isAdmin:true,pw:'dung@adm',color:'#a78bfa',jid:'tp5'},
+    {id:'sa',   name:'Quản trị viên',    role:'superadmin',   pw:'superadmin@2026',color:'#f43f5e',jid:'',    group:''},
+    {id:'ca',   name:'Nguyễn Văn Hòa',  role:'chanh_an',     pw:'admin123',        color:'#00c4a7',jid:'tp1', group:'HS'},
+    {id:'pca1', name:'Hoàng Văn Dũng',  role:'pho_chanh_an', pw:'dung@pca',        color:'#a78bfa',jid:'tp5', group:'ds'},
+    {id:'pca2', name:'Lê Thị Hương',    role:'pho_chanh_an', pw:'huong@pca',       color:'#fb923c',jid:'tp6', group:'hngd'},
+    {id:'pca3', name:'Trần Quốc Bảo',   role:'pho_chanh_an', pw:'bao@pca',         color:'#34d399',jid:'tp7', group:'mix'},
+    {id:'u2',   name:'Trần Thị Lan',    role:'judge',        pw:'lan@2026',        color:'#60a5fa',jid:'tp2', group:''},
+    {id:'u3',   name:'Lê Minh Tuấn',    role:'judge',        pw:'tuan@2026',       color:'#f5a623',jid:'tp3', group:''},
+    {id:'u4',   name:'Phạm Thị Thu',    role:'judge',        pw:'thu@2026',        color:'#f05252',jid:'tp4', group:''},
   ],
   judges:[
-    {id:'tp1',name:'Nguyễn Văn Hòa',role:'Chánh án',spec:'',color:'#00c4a7'},
+    {id:'tp1',name:'Nguyễn Văn Hòa',role:'Chánh án',spec:'HS',color:'#00c4a7'},
     {id:'tp2',name:'Trần Thị Lan',role:'Thẩm phán',spec:'DS',color:'#60a5fa'},
     {id:'tp3',name:'Lê Minh Tuấn',role:'Thẩm phán',spec:'HS',color:'#f5a623'},
     {id:'tp4',name:'Phạm Thị Thu',role:'Thẩm phán',spec:'HC',color:'#f05252'},
-    {id:'tp5',name:'Hoàng Văn Dũng',role:'Phó Chánh án',spec:'',color:'#a78bfa'},
+    {id:'tp5',name:'Hoàng Văn Dũng',role:'Phó Chánh án',spec:'DS',color:'#a78bfa'},
+    {id:'tp6',name:'Lê Thị Hương',role:'Phó Chánh án',spec:'HN',color:'#fb923c'},
+    {id:'tp7',name:'Trần Quốc Bảo',role:'Phó Chánh án',spec:'KDTM',color:'#34d399'},
   ],
   cases:[
     {id:'c1',soDon:'01/2026/DS-ST',loai:'DS',ngayNhan:'2026-01-05',nguyenDon:'Nguyễn Thị Hoa',biDon:'Trần Văn Bình',tjid:'tp2',thoiHan:30,uuTien:'normal',ts:'dangXuLy',noiDung:'Tranh chấp hợp đồng mua bán đất đai 500m².',ghiChu:'Đã nộp đủ tạm ứng án phí.',mod:'don',donXong:false,soThuLy:'',ngayThuLy:'',
@@ -356,13 +385,51 @@ const ini=n=>n?n.split(' ').slice(-2).map(w=>w[0]).join('').toUpperCase():'?';
 const gj=id=>S.judges.find(j=>j.id===id);
 const jload=id=>S.cases.filter(c=>c.tjid===id&&c.ts!=='hoangTat').length;
 const pr=c=>{const t=c.cl.length,d=c.cl.filter(x=>x.done).length;return{d,t,p:t?Math.round(d/t*100):0}};
-const isAdmin=()=>session&&session.isAdmin;
+
+// ── ROLE HELPERS ──
+const isSuperAdmin=()=>session&&session.role==='superadmin';
+const isChanh=()=>session&&session.role==='chanh_an';
+const isPCA=()=>session&&session.role==='pho_chanh_an';
+const isJudge=()=>session&&session.role==='judge';
+const isAdmin=()=>session&&(session.role==='superadmin'||session.role==='chanh_an'||session.role==='pho_chanh_an');
+const canManageTP=()=>session&&session.role==='superadmin';
+const canAssign=()=>session&&['superadmin','chanh_an','pho_chanh_an'].includes(session.role);
 const myJid=()=>session?session.jid:null;
+
+// Loan type → group mapping
+const LOAI_GROUP={
+  'HS':'hs',
+  'DS':'ds','MGTHADN':'ds',
+  'HN':'hngd',
+  'KDTM':'mix','LD':'mix','HC':'mix','XLHC':'mix','MGHS':'mix'
+};
+// PCA group → allowed loan types
+const GROUP_LOAI={
+  'ds':  ['DS','MGTHADN'],
+  'hngd':['HN'],
+  'mix': ['KDTM','LD','HC','XLHC','MGHS'],
+  'hs':  ['HS'],
+  '':    ['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS']
+};
+// Check if current session can assign a case by loai
+function canAssignLoai(loai){
+  if(isSuperAdmin()) return true;
+  if(isChanh()) return loai==='HS';
+  if(isPCA()) return (GROUP_LOAI[session.group]||[]).includes(loai);
+  return false;
+}
+// Cases visible to current assigner (for phân công page)
+function assignableCases(){
+  if(isSuperAdmin()) return S.cases;
+  if(isChanh()) return S.cases.filter(c=>c.loai==='HS');
+  if(isPCA()) return S.cases.filter(c=>(GROUP_LOAI[session.group]||[]).includes(c.loai));
+  return [];
+}
 
 function dlDays(nn,th){const e=new Date(nn);e.setDate(e.getDate()+parseInt(th));return Math.ceil((e-new Date())/(864e5))}
 function dlLabel(nn,th){const d=dlDays(nn,th);if(d<0)return`<span class="dl-ov">🔴 Quá ${Math.abs(d)} ngày</span>`;if(d<=7)return`<span class="dl-w">⚠ Còn ${d} ngày</span>`;return`<span class="dl-ok">Còn ${d} ngày</span>`}
 function stB(s){const m={dauGiai:['bg-b','Đang thụ lý'],dangXuLy:['bg-a','Đang xử lý'],quaHan:['bg-r','Quá hạn'],hoangTat:['bg-g','Hoàn tất'],dinh:['bg-x','Đình chỉ'],tamDinh:['bg-amber','⏸ Tạm đình chỉ'],choThuLy:['bg-pu','⏳ Chờ Admin thụ lý'],donXongM1:['bg-g','✅ Đơn đã xử lý xong']};const[cv,l]=m[s]||['bg-x',s];return`<span class="badge ${cv}">${l}</span>`}
-function loaiB(l){const m={DS:'bg-b',HS:'bg-r',HC:'bg-a',KDTM:'bg-t',LD:'bg-g',HN:'bg-x'};return`<span class="badge ${m[l]||'bg-x'}">${l}</span>`}
+function loaiB(l){const m={DS:'bg-b',HS:'bg-r',HC:'bg-a',KDTM:'bg-t',LD:'bg-g',HN:'bg-x',XLHC:'bg-a',MGTHADN:'bg-pu',MGHS:'bg-pu'};const label={MGTHADN:'MGTHADN',MGHS:'MGHS-Treo',XLHC:'XLHC'};return`<span class="badge ${m[l]||'bg-x'}">${label[l]||l}</span>`}
 function utB(u){if(u==='urgent')return'<span class="badge bg-r">🔴 Khẩn</span>';if(u==='high')return'<span class="badge bg-a">🟠 Cao</span>';return'<span class="badge bg-x">🟢 Thường</span>'}
 
 function autoStatus(){S.cases.forEach(c=>{if(['hoangTat','dinh','tamDinh','choThuLy','donXongM1'].includes(c.ts))return;if(dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='quaHan')c.ts='quaHan'})}
@@ -373,7 +440,12 @@ function renderLogin(){
     <div class="lacc" id="la-${a.id}" onclick="selAcc('${a.id}')">
       <div class="lav" style="background:${a.color}22;color:${a.color}">${ini(a.name)}</div>
       <div><div class="lan">${a.name}</div><div class="lar">${a.role}</div></div>
-      <span class="labg ${a.isAdmin?'admin':'judge'}">${a.isAdmin?'🛡️ Admin':'⚖️ Thẩm phán'}</span>
+      <span class="labg ${a.role==='superadmin'?'admin':a.role==='chanh_an'?'admin':a.role==='pho_chanh_an'?'admin':'judge'}">${
+      a.role==='superadmin'?'⚙️ Quản trị':
+      a.role==='chanh_an'?'🏛️ Chánh án':
+      a.role==='pho_chanh_an'?'⚖️ P.Chánh án':
+      '👨‍⚖️ Thẩm phán'
+    }</span>
     </div>`).join('');
 }
 let selAccId=null;
@@ -383,7 +455,7 @@ function doLogin(){
   if(!selAccId){err.textContent='❌ Vui lòng chọn tài khoản';err.style.display='block';return}
   const pw=document.getElementById('lpw').value;
   const acc=S.accounts.find(a=>a.id===selAccId);
-  if(!acc||acc.pw!==pw){err.style.display='block';return}
+  if(!acc||acc.pw!==pw){err.textContent='❌ Mật khẩu không đúng';err.style.display='block';return}
   session=acc;
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('appScreen').style.display='block';
@@ -403,12 +475,19 @@ function initApp(){
   const av=document.getElementById('sbAv');
   av.textContent=ini(session.name);av.style.background=session.color+'22';av.style.color=session.color;
   document.getElementById('sbName').textContent=session.name;
-  document.getElementById('sbRole').textContent=session.isAdmin?'🛡️ Quản trị viên':'⚖️ Thẩm phán';
-  ['adNav','niPC','niTP'].forEach(id=>document.getElementById(id).style.display=isAdmin()?'block':'none');
-  document.getElementById('niPC').style.display=isAdmin()?'flex':'none';
-  document.getElementById('niTP').style.display=isAdmin()?'flex':'none';
+  const roleLabel={superadmin:'⚙️ Quản trị hệ thống',chanh_an:'🏛️ Chánh án',pho_chanh_an:'⚖️ Phó Chánh án',judge:'👨‍⚖️ Thẩm phán'};
+  document.getElementById('sbRole').textContent=roleLabel[session.role]||'👤 Người dùng';
+  // Show/hide admin nav section
+  document.getElementById('adNav').style.display=canAssign()?'block':'none';
+  document.getElementById('niPC').style.display=canAssign()?'flex':'none';
+  // TP management: superadmin only
+  const adminSec=document.getElementById('adminSec');
+  if(adminSec) adminSec.style.display=canManageTP()?'block':'none';
+  document.getElementById('niTP').style.display=canManageTP()?'flex':'none';
   const d=new Date();document.getElementById('todayStr').textContent=`${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
-  go('dash');
+  // Default landing page
+  if(canAssign()&&!isJudge()) go('pc');
+  else go('dash');
 }
 
 // ═══════════════ NAV ═══════════════
@@ -421,14 +500,17 @@ function go(page){
   document.getElementById('ptitle').textContent=titles[page]||page;
   // topbar actions
   let tbHtml='';
-  if(isAdmin()&&['dash','don','vuan','pc'].includes(page))tbHtml+=`<button class="btn btn-s" onclick="om('m-don')">➕ Thêm đơn mới</button>`;
-  if(isAdmin())tbHtml+=`<button class="btn btn-p" onclick="expCSV()">📤 Xuất CSV</button>`;
+  // Only superadmin can add new cases
+  if(isSuperAdmin())tbHtml+=`<button class="btn btn-s" onclick="om('m-don')">➕ Thêm đơn mới</button>`;
+  if(isSuperAdmin()||isChanh())tbHtml+=`<button class="btn btn-p" onclick="expCSV()">📤 Xuất CSV</button>`;
   document.getElementById('tbActions').innerHTML=tbHtml;
   renderPage(page);
 }
 
 function updBadges(){
-  let cs=isAdmin()?S.cases:S.cases.filter(c=>c.tjid===myJid());
+  let cs=isSuperAdmin()?S.cases:
+    canAssign()?assignableCases():
+    S.cases.filter(c=>c.tjid===myJid()||c.originalTjid===myJid());
   const un=S.cases.filter(c=>!c.tjid&&c.ts!=='hoangTat').length;
   document.getElementById('nb-don').textContent=cs.filter(c=>c.mod==='don'&&c.ts!=='hoangTat').length;
   document.getElementById('nb-vuan').textContent=cs.filter(c=>c.mod==='vuan'&&c.ts!=='hoangTat').length;
@@ -450,7 +532,9 @@ function renderPage(p){
 
 // DASHBOARD
 function renderDash(){
-  const cs=isAdmin()?S.cases:S.cases.filter(c=>c.tjid===myJid());
+  const cs=isSuperAdmin()?S.cases:
+    canAssign()?assignableCases():
+    S.cases.filter(c=>c.tjid===myJid()||c.originalTjid===myJid());
   const total=cs.length,dang=cs.filter(c=>c.ts!=='hoangTat').length;
   const qh=cs.filter(c=>dlDays(c.ngayNhan,c.thoiHan)<0&&c.ts!=='hoangTat').length;
   const sh=cs.filter(c=>{const d=dlDays(c.ngayNhan,c.thoiHan);return d>=0&&d<=7&&c.ts!=='hoangTat'}).length;
@@ -540,7 +624,7 @@ function renderList(mod){
     <input id="fl-s" placeholder="🔍 Tìm số hồ sơ, nguyên đơn..." onkeyup="renderPage('${mod}')"/>
     ${isAdmin()?`<span class="fl">Thẩm phán:</span><select id="fl-j" onchange="renderPage('${mod}')"><option value="">Tất cả</option>${jopts}</select>`:''}
     <span class="fl">Loại:</span>
-    <select id="fl-l" onchange="renderPage('${mod}')"><option value="">Tất cả</option><option value="DS">DS</option><option value="HS">HS</option><option value="HC">HC</option><option value="KDTM">KDTM</option><option value="LD">LD</option><option value="HN">HN</option></select>
+    <select id="fl-l" onchange="renderPage('${mod}')"><option value="">Tất cả</option><option value="DS">DS</option><option value="HS">HS</option><option value="HC">HC</option><option value="KDTM">KDTM</option><option value="LD">LĐ</option><option value="HN">HN</option><option value="XLHC">XLHC</option><option value="MGTHADN">MGTHADN</option><option value="MGHS">MGHS</option></select>
     <span class="fl">Trạng thái:</span>
     <select id="fl-st" onchange="renderPage('${mod}')"><option value="">Tất cả</option><option value="dauGiai">Đang thụ lý</option><option value="dangXuLy">Đang xử lý</option><option value="quaHan">Quá hạn</option><option value="choThuLy">Chờ thụ lý</option><option value="donXongM1">Đơn xử lý xong</option><option value="hoangTat">Hoàn tất</option></select>
     <span style="margin-left:auto;font-size:11px;color:var(--text2)">${cs.length} hồ sơ</span>
@@ -553,10 +637,14 @@ function renderList(mod){
 
 // PHÂN CÔNG
 function renderPC(){
-  if(!isAdmin())return'<div class="ab ad">🚫 Chỉ Admin mới có quyền.</div>';
-  const choThuLy=S.cases.filter(c=>c.ts==='choThuLy');
-  const un=S.cases.filter(c=>!c.tjid&&!['hoangTat','choThuLy','donXongM1'].includes(c.ts));
-  const as=S.cases.filter(c=>c.tjid&&!['hoangTat','choThuLy','donXongM1'].includes(c.ts));
+  if(!canAssign())return'<div class="ab ad">🚫 Bạn không có quyền truy cập trang này.</div>';
+  const allVisible=assignableCases();
+  const choThuLy=allVisible.filter(c=>c.ts==='choThuLy');
+  const un=allVisible.filter(c=>!c.tjid&&!['hoangTat','choThuLy','donXongM1'].includes(c.ts));
+  const as=allVisible.filter(c=>c.tjid&&!['hoangTat','choThuLy','donXongM1'].includes(c.ts));
+  // Role badge for page header
+  const roleInfo=isChanh()?'🏛️ Chánh án – Phân công án Hình sự':
+    isPCA()?`⚖️ Phó Chánh án – Nhóm: ${{'ds':'Dân sự & MGTHADN','hngd':'HN & Gia đình','mix':'KDTM · LĐ · HC · XLHC · MGHS'}[session.group]||session.group}`:'⚙️ Quản trị viên – Toàn quyền';
   const unRows=un.length?un.map(c=>`<tr>
     <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td><td>${utB(c.uuTien)}</td><td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
     <td><button class="btn btn-p btn-sm" onclick="openAs('${c.id}');event.stopPropagation()">📌 Phân công</button></td>
@@ -576,7 +664,8 @@ function renderPC(){
       <td><button class="btn btn-p btn-sm" onclick="openThuLy('${c.id}');event.stopPropagation()">⚖️ Thụ lý & Phân công</button></td>
     </tr>`;}).join(''):`<tr><td colspan="7" style="text-align:center;padding:14px;color:var(--text2)">Không có hồ sơ chờ thụ lý</td></tr>`;
   return`
-  ${choThuLy.length?`<div class="ab aw">📬 Có <b>${choThuLy.length} hồ sơ</b> đã xử lý đơn xong, đang chờ Admin thụ lý và phân công.</div>`:''}
+  <div class="ab ai" style="margin-bottom:12px">👤 ${roleInfo}</div>
+  ${choThuLy.length?`<div class="ab aw">📬 Có <b>${choThuLy.length} hồ sơ</b> đã xử lý đơn xong, đang chờ phân công.</div>`:''}
   <div style="font-size:13px;font-weight:800;margin-bottom:7px;color:var(--purple)">📬 ĐÃ XỬ LÝ ĐƠN – CHỜ THỤ LÝ (${choThuLy.length})</div>
   <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Kết quả xử lý đơn</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${ctlRows}</tbody></table></div>
   ${un.length?`<div class="ab aw">⚠️ Có <b>${un.length} hồ sơ</b> chưa phân công Thẩm phán. Hãy phân công để bắt đầu xử lý.</div>`:''}
@@ -625,7 +714,9 @@ function confirmAssign(){
 
 // CẢNH BÁO
 function renderCB(){
-  let cs=isAdmin()?S.cases:S.cases.filter(c=>c.tjid===myJid());
+  let cs=isSuperAdmin()?S.cases:
+    canAssign()?assignableCases():
+    S.cases.filter(c=>c.tjid===myJid()||c.originalTjid===myJid());
   const all=cs.filter(c=>c.ts!=='hoangTat').map(c=>({...c,days:dlDays(c.ngayNhan,c.thoiHan)})).sort((a,b)=>a.days-b.days);
   const ov=all.filter(c=>c.days<0),sn=all.filter(c=>c.days>=0&&c.days<=7),ok=all.filter(c=>c.days>7);
   const row=(c,tp)=>{const j=gj(c.tjid),msg=c.days<0?`Quá ${Math.abs(c.days)} ngày`:`Còn ${c.days} ngày`;
@@ -645,7 +736,7 @@ function renderCB(){
 
 // THẨM PHÁN
 function renderTP(){
-  if(!isAdmin())return'<div class="ab ad">🚫 Chỉ Admin mới có quyền.</div>';
+  if(!canManageTP())return'<div class="ab ad">🚫 Chỉ Quản trị viên hệ thống mới có quyền.</div>';
   const cards=S.judges.map(j=>{
     const oa=S.cases.filter(c=>c.tjid===j.id),done=oa.filter(c=>c.ts==='hoangTat').length,act=oa.filter(c=>c.ts!=='hoangTat').length,warn=oa.filter(c=>dlDays(c.ngayNhan,c.thoiHan)<=7&&c.ts!=='hoangTat').length;
     const acc=S.accounts.find(a=>a.jid===j.id);
@@ -655,7 +746,11 @@ function renderTP(){
         <div>
           <div style="font-size:14px;font-weight:800">${j.name}</div>
           <div style="font-size:11px;color:var(--text2)">${j.role}${j.spec?' · '+j.spec:''}</div>
-          ${acc?`<span class="badge ${acc.isAdmin?'bg-t':'bg-b'}" style="margin-top:3px">${acc.isAdmin?'🛡️ Admin':'⚖️ Thẩm phán'}</span>`:''}
+          ${acc?`<span class="badge ${acc.role==='superadmin'?'bg-r':acc.role==='chanh_an'?'bg-t':acc.role==='pho_chanh_an'?'bg-pu':'bg-b'}" style="margin-top:3px">${
+            acc.role==='superadmin'?'⚙️ Quản trị':acc.role==='chanh_an'?'🏛️ Chánh án':
+            acc.role==='pho_chanh_an'?`⚖️ P.Chánh án – ${{'ds':'Nhóm DS','hngd':'Nhóm HNGĐ','mix':'Nhóm MIX'}[acc.group]||acc.group}`:
+            '👨‍⚖️ Thẩm phán'
+          }</span>`:''}
         </div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:9px">
@@ -686,7 +781,9 @@ function openDt(id){
   const c=S.cases.find(x=>x.id===id);if(!c)return;
   curDetailId=id;
   const j=gj(c.tjid),r=pr(c),days=dlDays(c.ngayNhan,c.thoiHan);
-  const canEdit=(isAdmin()||(c.tjid===myJid()&&!['choThuLy','donXongM1'].includes(c.ts)));
+  // superadmin: full edit. chanh_an/pca: view only in M1 (can't tick checklist for judge).
+  // judge: edit only their own cases not in choThuLy/donXongM1
+  const canEdit=isSuperAdmin()||(c.tjid===myJid()&&isJudge()&&!['choThuLy','donXongM1'].includes(c.ts));
   document.getElementById('dt-t').textContent=`${c.soDon} — ${c.nguyenDon} vs ${c.biDon}`;
   document.getElementById('dt-s').textContent=`${c.loai} · Nhận ${fmt(c.ngayNhan)} · ${j?j.name:'Chưa phân công'}`;
   let ah='';
@@ -779,7 +876,7 @@ function openDt(id){
         <div class="fg"><label>Bị đơn</label><input value="${c.biDon}" readonly style="opacity:.65"></div>
         <div class="fg"><label>Ngày nhận</label><input value="${fmt(c.ngayNhan)}" readonly style="opacity:.65"></div>
         <div class="fg"><label>Thời hạn (ngày)</label><input value="${c.thoiHan}" readonly style="opacity:.65"></div>
-        ${isAdmin()?`
+        ${(isSuperAdmin()||canAssign())?`
         <div class="fg"><label>Phân công Thẩm phán</label>
           <select onchange="qReas('${c.id}',this.value)"><option value="">-- Chưa --</option>${jOpts}</select>
         </div>
@@ -805,7 +902,9 @@ function openDt(id){
 function swTab(el,tid){const ctx=el.closest('.mb');ctx.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');ctx.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));document.getElementById(tid).classList.add('active')}
 function togChk(cid,iid){
   const c=S.cases.find(x=>x.id===cid);if(!c)return;
-  const canEdit=(isAdmin()||(c.tjid===myJid()&&!['choThuLy','donXongM1'].includes(c.ts)));if(!canEdit)return;
+  // superadmin: full edit. chanh_an/pca: view only in M1 (can't tick checklist for judge).
+  // judge: edit only their own cases not in choThuLy/donXongM1
+  const canEdit=isSuperAdmin()||(c.tjid===myJid()&&isJudge()&&!['choThuLy','donXongM1'].includes(c.ts));if(!canEdit)return;
   const item=c.cl.find(x=>x.id===iid);if(!item)return;
   const isFinalType = item.type==='final_end'||item.type==='final_queue';
 
@@ -899,11 +998,18 @@ function addDon(){
 }
 
 // ADD TP
+function toggleGroupField(){
+  const role=document.getElementById('tp-adm').value;
+  document.getElementById('grpField').style.display=role==='pho_chanh_an'?'block':'none';
+}
 function addTP(){
   const n=document.getElementById('tp-n').value.trim();if(!n){alert('Vui lòng nhập họ tên');return}
-  const id='tp'+Date.now(),color=document.getElementById('tp-c').value,isAdm=document.getElementById('tp-adm').value==='yes';
+  const pw=document.getElementById('tp-pw').value.trim();if(!pw){alert('Vui lòng nhập mật khẩu');return}
+  const role=document.getElementById('tp-adm').value;
+  const grp=role==='pho_chanh_an'?document.getElementById('tp-grp').value:'';
+  const id='tp'+Date.now(),color=document.getElementById('tp-c').value;
   S.judges.push({id,name:n,role:document.getElementById('tp-r').value,spec:document.getElementById('tp-s').value,color});
-  S.accounts.push({id:'u'+Date.now(),name:n,role:document.getElementById('tp-r').value,isAdmin:isAdm,pw:document.getElementById('tp-pw').value||'tand2026',color,jid:id});
+  S.accounts.push({id:'u'+Date.now(),name:n,role,pw,color,jid:id,group:grp});
   save();cm('m-tp');renderPage(curPage);renderLogin();
 }
 
@@ -962,7 +1068,7 @@ let thuLyId = null;
 let thuLyJid = null;
 
 function openThuLy(cid){
-  if(!isAdmin()) return;
+  if(!canAssign()) return;
   thuLyId = cid; thuLyJid = null;
   const cs = S.cases.find(x=>x.id===cid);
   const finalItem = cs.cl.find(x=>x.type==='final_queue'&&x.done);
