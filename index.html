@@ -690,18 +690,26 @@ function renderPC(){
     <td><button class="btn btn-s btn-sm" onclick="openAs('${c.id}');event.stopPropagation()">✏️ Đổi</button></td>
   </tr>`}).join('');
   const ctlRows=choThuLy.length?choThuLy.map(c=>{
-    const finalItem=c.cl.find(x=>x.type==='final'&&x.done);
+    const finalItem=c.cl.find(x=>(x.type==='final_queue'||x.type==='final_end'||x.type==='final')&&x.done);
+    const tpDeXuat=gj(c.tjid||c.originalTjid);
     return`<tr>
-      <td class="mono">${c.soDon}</td><td>${loaiB(c.loai)}</td><td>${c.nguyenDon}</td><td style="color:var(--text2)">${c.biDon}</td>
-      <td><span class="badge bg-t">${finalItem?finalItem.t:'—'}</span></td>
+      <td class="mono">${c.soDon}</td>
+      <td>${loaiB(c.loai)}</td>
+      <td>${c.nguyenDon}</td>
+      <td style="color:var(--text2)">${c.biDon}</td>
+      <td>${tpDeXuat?`<span style="color:${tpDeXuat.color};font-weight:700">👨‍⚖️ ${tpDeXuat.name}</span>`:`<span style="color:var(--text2);font-style:italic">Không rõ</span>`}</td>
+      <td><span class="badge bg-t" style="font-size:11px">${finalItem?finalItem.t:'—'}</span></td>
       <td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
       <td><button class="btn btn-p btn-sm" onclick="openThuLy('${c.id}');event.stopPropagation()">⚖️ Thụ lý & Phân công</button></td>
-    </tr>`;}).join(''):`<tr><td colspan="7" style="text-align:center;padding:14px;color:var(--text2)">Không có hồ sơ chờ thụ lý</td></tr>`;
+    </tr>`}).join(''):`<tr><td colspan="8" style="text-align:center;padding:14px;color:var(--text2)">Không có hồ sơ chờ thụ lý</td></tr>`;
+      <td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
+      <td><button class="btn btn-p btn-sm" onclick="openThuLy('${c.id}');event.stopPropagation()">⚖️ Thụ lý & Phân công</button></td>
+    </tr>`;}).join(''):`<tr><td colspan="8" style="text-align:center;padding:14px;color:var(--text2)">Không có hồ sơ chờ thụ lý</td></tr>`;
   return`
   <div class="ab ai" style="margin-bottom:12px">👤 ${roleInfo}</div>
   ${choThuLy.length?`<div class="ab aw">📬 Có <b>${choThuLy.length} hồ sơ</b> đã xử lý đơn xong, đang chờ phân công.</div>`:''}
   <div style="font-size:13px;font-weight:800;margin-bottom:7px;color:var(--purple)">📬 ĐÃ XỬ LÝ ĐƠN – CHỜ THỤ LÝ (${choThuLy.length})</div>
-  <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Kết quả xử lý đơn</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${ctlRows}</tbody></table></div>
+  <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Thẩm phán đề xuất</th><th>Kết quả xử lý đơn</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${ctlRows}</tbody></table></div>
   ${un.length?`<div class="ab aw">⚠️ Có <b>${un.length} hồ sơ</b> chưa phân công Thẩm phán. Hãy phân công để bắt đầu xử lý.</div>`:''}
   <div style="font-size:13px;font-weight:800;margin-bottom:7px;color:var(--red)">⏳ CHƯA PHÂN CÔNG (${un.length})</div>
   <div class="tw" style="margin-bottom:18px"><table><thead><tr><th>Số hồ sơ</th><th>Loại</th><th>Nguyên đơn</th><th>Bị đơn</th><th>Ưu tiên</th><th>Thời hạn</th><th>Thao tác</th></tr></thead><tbody>${unRows}</tbody></table></div>
