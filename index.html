@@ -183,15 +183,15 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
     </div>
     <nav class="sbnav">
       <div class="nsec" id="adNav" style="display:none">Phân công</div>
-      <div class="ni" id="niPC" onclick="go('pc')" style="display:none"><span class="ic">🗂️</span>Phân công hồ sơ<span class="nb r" id="nb-pc">0</span></div>
+      <div class="ni" id="niPC" data-page="pc" onclick="go('pc')" style="display:none"><span class="ic">🗂️</span>Phân công hồ sơ<span class="nb r" id="nb-pc">0</span></div>
       <div class="nsec">Theo dõi</div>
-      <div class="ni active" onclick="go('dash')"><span class="ic">📊</span>Bảng tổng quan</div>
-      <div class="ni" onclick="go('don')"><span class="ic">📋</span>Module 1: Đơn xem xét<span class="nb r" id="nb-don">0</span></div>
-      <div class="ni" onclick="go('vuan')"><span class="ic">⚖️</span>Module 2: Vụ án<span class="nb a" id="nb-vuan">0</span></div>
+      <div class="ni active" data-page="dash" onclick="go('dash')"><span class="ic">📊</span>Bảng tổng quan</div>
+      <div class="ni" data-page="don" onclick="go('don')"><span class="ic">📋</span>Module 1: Đơn xem xét<span class="nb r" id="nb-don">0</span></div>
+      <div class="ni" data-page="vuan" onclick="go('vuan')"><span class="ic">⚖️</span>Module 2: Vụ án<span class="nb a" id="nb-vuan">0</span></div>
       <div class="nsec">Cảnh báo</div>
-      <div class="ni" onclick="go('cb')"><span class="ic">🔔</span>Thời hạn sắp hết<span class="nb r" id="nb-cb">0</span></div>
+      <div class="ni" data-page="cb" onclick="go('cb')"><span class="ic">🔔</span>Thời hạn sắp hết<span class="nb r" id="nb-cb">0</span></div>
       <div class="nsec" id="adminSec" style="display:none">Quản trị hệ thống</div>
-      <div class="ni" id="niTP" onclick="go('tp')" style="display:none"><span class="ic">👨‍⚖️</span>Quản lý Thẩm phán</div>
+      <div class="ni" id="niTP" data-page="tp" onclick="go('tp')" style="display:none"><span class="ic">👨‍⚖️</span>Quản lý Thẩm phán</div>
     </nav>
     <div style="padding:8px 14px;border-top:1px solid var(--border)">
       <button class="btn btn-s" style="width:100%;font-size:11px;justify-content:center" onclick="om_cpw()">🔑 Đổi mật khẩu</button>
@@ -305,14 +305,14 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
 // ═══════════════════════════════ DATA ═══════════════════════════════
 const DEF = {
   accounts:[
-    {id:'sa',   name:'Quản trị viên',    role:'superadmin',   pw:'superadmin@2026',color:'#f43f5e',jid:'',    group:''},
-    {id:'ca',   name:'Nguyễn Văn Hòa',  role:'chanh_an',     pw:'admin123',        color:'#00c4a7',jid:'tp1', group:'HS'},
-    {id:'pca1', name:'Hoàng Văn Dũng',  role:'pho_chanh_an', pw:'dung@pca',        color:'#a78bfa',jid:'tp5', group:'ds'},
-    {id:'pca2', name:'Lê Thị Hương',    role:'pho_chanh_an', pw:'huong@pca',       color:'#fb923c',jid:'tp6', group:'hngd'},
-    {id:'pca3', name:'Trần Quốc Bảo',   role:'pho_chanh_an', pw:'bao@pca',         color:'#34d399',jid:'tp7', group:'mix'},
-    {id:'u2',   name:'Trần Thị Lan',    role:'judge',        pw:'lan@2026',        color:'#60a5fa',jid:'tp2', group:''},
-    {id:'u3',   name:'Lê Minh Tuấn',    role:'judge',        pw:'tuan@2026',       color:'#f5a623',jid:'tp3', group:''},
-    {id:'u4',   name:'Phạm Thị Thu',    role:'judge',        pw:'thu@2026',        color:'#f05252',jid:'tp4', group:''},
+    {id:'sa',   name:'Quản trị viên',    role:'superadmin',   pw:'superadmin@2026',color:'#f43f5e',jid:'',    group:'',   allowedLoai:['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS']},
+    {id:'ca',   name:'Nguyễn Văn Hòa',  role:'chanh_an',     pw:'admin123',        color:'#00c4a7',jid:'tp1', group:'HS', allowedLoai:['HS']},
+    {id:'pca1', name:'Hoàng Văn Dũng',  role:'pho_chanh_an', pw:'dung@pca',        color:'#a78bfa',jid:'tp5', group:'ds', allowedLoai:['DS','MGTHADN']},
+    {id:'pca2', name:'Lê Thị Hương',    role:'pho_chanh_an', pw:'huong@pca',       color:'#fb923c',jid:'tp6', group:'hngd',allowedLoai:['HN']},
+    {id:'pca3', name:'Trần Quốc Bảo',   role:'pho_chanh_an', pw:'bao@pca',         color:'#34d399',jid:'tp7', group:'mix',allowedLoai:['KDTM','LD','HC','XLHC','MGHS']},
+    {id:'u2',   name:'Trần Thị Lan',    role:'judge',        pw:'lan@2026',        color:'#60a5fa',jid:'tp2', group:'',   allowedLoai:[]},
+    {id:'u3',   name:'Lê Minh Tuấn',    role:'judge',        pw:'tuan@2026',       color:'#f5a623',jid:'tp3', group:'',   allowedLoai:[]},
+    {id:'u4',   name:'Phạm Thị Thu',    role:'judge',        pw:'thu@2026',        color:'#f05252',jid:'tp4', group:'',   allowedLoai:[]},
   ],
   judges:[
     {id:'tp1',name:'Nguyễn Văn Hòa',role:'Chánh án',spec:'HS',color:'#00c4a7'},
@@ -403,26 +403,23 @@ const LOAI_GROUP={
   'HN':'hngd',
   'KDTM':'mix','LD':'mix','HC':'mix','XLHC':'mix','MGHS':'mix'
 };
-// PCA group → allowed loan types
-const GROUP_LOAI={
-  'ds':  ['DS','MGTHADN'],
-  'hngd':['HN'],
-  'mix': ['KDTM','LD','HC','XLHC','MGHS'],
-  'hs':  ['HS'],
-  '':    ['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS']
-};
+// Get allowed loan types for current session from account.allowedLoai
+function myAllowedLoai(){
+  if(isSuperAdmin()) return ['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS'];
+  return (session.allowedLoai||[]);
+}
 // Check if current session can assign a case by loai
 function canAssignLoai(loai){
   if(isSuperAdmin()) return true;
-  if(isChanh()) return loai==='HS';
-  if(isPCA()) return (GROUP_LOAI[session.group]||[]).includes(loai);
-  return false;
+  return myAllowedLoai().includes(loai);
 }
 // Cases visible to current assigner (for phân công page)
 function assignableCases(){
   if(isSuperAdmin()) return S.cases;
-  if(isChanh()) return S.cases.filter(c=>c.loai==='HS');
-  if(isPCA()) return S.cases.filter(c=>(GROUP_LOAI[session.group]||[]).includes(c.loai));
+  if(canAssign()){
+    const al=myAllowedLoai();
+    return S.cases.filter(c=>al.includes(c.loai));
+  }
   return [];
 }
 
@@ -494,15 +491,16 @@ function initApp(){
 function go(page){
   curPage=page;
   document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
-  const m={dash:0,don:1,vuan:2,cb:3,pc:4,tp:5};
-  document.querySelectorAll('.ni')[m[page]]?.classList.add('active');
+  // Use data-page attribute for reliable nav highlighting
+  const navEl=document.querySelector(`.ni[data-page="${page}"]`);
+  if(navEl) navEl.classList.add('active');
   const titles={dash:'Bảng tổng quan',don:'Module 1 – Đơn được phân công xem xét',vuan:'Module 2 – Vụ án được phân công',cb:'Cảnh báo thời hạn',pc:'Phân công hồ sơ',tp:'Quản lý Thẩm phán'};
   document.getElementById('ptitle').textContent=titles[page]||page;
   // topbar actions
   let tbHtml='';
-  // Only superadmin can add new cases
-  if(isSuperAdmin())tbHtml+=`<button class="btn btn-s" onclick="om('m-don')">➕ Thêm đơn mới</button>`;
-  if(isSuperAdmin()||isChanh())tbHtml+=`<button class="btn btn-p" onclick="expCSV()">📤 Xuất CSV</button>`;
+  // Superadmin, Chánh án, PCA can add new cases
+  if(isSuperAdmin()||isChanh()||isPCA())tbHtml+=`<button class="btn btn-s" onclick="om('m-don')">➕ Thêm đơn mới</button>`;
+  if(isSuperAdmin()||isChanh()||isPCA())tbHtml+=`<button class="btn btn-p" onclick="expCSV()">📤 Xuất CSV</button>`;
   document.getElementById('tbActions').innerHTML=tbHtml;
   renderPage(page);
 }
@@ -769,7 +767,11 @@ function renderTP(){
       </div>
       <div style="font-size:10px;color:var(--text2);margin-bottom:2px">Hoàn thành: ${oa.length?Math.round(done/oa.length*100):0}%</div>
       <div class="pb"><div class="pf" style="background:${j.color};width:${oa.length?Math.round(done/oa.length*100):0}%"></div></div>
-      <button class="btn btn-s btn-sm" style="margin-top:10px;width:100%;justify-content:center" onclick="openResetPw('${j.id}')">🔑 Reset mật khẩu</button>
+      ${acc&&acc.allowedLoai&&acc.allowedLoai.length?`<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:3px">${acc.allowedLoai.map(l=>`<span class="badge bg-x" style="font-size:10px">${l}</span>`).join('')}</div>`:''}
+      <div style="display:flex;gap:6px;margin-top:10px">
+        <button class="btn btn-s btn-sm" style="flex:1;justify-content:center" onclick="openResetPw('${j.id}')">🔑 Reset MK</button>
+        ${acc&&acc.role!=='judge'?`<button class="btn btn-p btn-sm" style="flex:1;justify-content:center" onclick="openEditPerm('${acc.id}')">🔐 Phân quyền</button>`:''}
+      </div>
     </div>`;
   }).join('');
   return`<div style="display:flex;justify-content:flex-end;margin-bottom:12px"><button class="btn btn-p" onclick="om('m-tp')">➕ Thêm Thẩm phán</button></div>
@@ -800,7 +802,12 @@ function openDt(id){
     const isFinalQueue = item.type==='final_queue';
     const isFinalAny = isFinalEnd||isFinalQueue;
     const isOtherFinalDone = isFinalAny && finalDone && finalDone.id!==item.id;
-    const locked = !canEdit || isOtherFinalDone || (c.ts==='choThuLy' && c.mod==='don');
+    // Allow unticking the currently selected final item (so judge can re-select)
+    // Only lock OTHER final items (not the selected one) and only lock when sent to admin (choThuLy)
+    const isSelectedFinal = isFinalAny && item.done; // this is the one currently ticked
+    const locked = !canEdit 
+      || (isOtherFinalDone && !isSelectedFinal)  // gray others but NOT the ticked one
+      || (c.ts==='choThuLy' && c.mod==='don');   // fully lock once sent to admin
     // Module 2: finish types
     const isFinishA = item.type==='finish_a';
     const isFinishB = item.type==='finish_b';
@@ -953,7 +960,7 @@ function qStat(id,s){const c=S.cases.find(x=>x.id===id);if(c){c.ts=s;save()}}
 // ADD DON
 function om(id){
   document.getElementById(id).classList.add('open');
-  if(id==='m-don'){document.getElementById('f-nn').value=today();renderAlList();newDonJid='';const hgdt=document.getElementById('f-hgdt');if(hgdt)hgdt.checked=false;}
+  if(id==='m-don'){document.getElementById('f-nn').value=today();renderAlList();newDonJid='';filterLoanTypes();const hgdt=document.getElementById('f-hgdt');if(hgdt)hgdt.checked=false;}
 }
 function cm(id){document.getElementById(id).classList.remove('open')}
 document.querySelectorAll('.mo').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open')}));
@@ -971,7 +978,8 @@ function selNewJ(id){newDonJid=id;document.querySelectorAll('#f-al .ar').forEach
 
 function addDon(){
   const sd=document.getElementById('f-sd').value.trim();if(!sd){alert('Vui lòng nhập số đơn');return}
-  if(!newDonJid){alert('Vui lòng chọn Thẩm phán để phân công đơn này.');return}
+  // Judge selection required only for superadmin direct add; CA/PCA can leave unassigned
+  if(!newDonJid && isJudge()){alert('Vui lòng chọn Thẩm phán để phân công đơn này.');return}
   const t=Date.now();
   const mod=document.getElementById('f-m').value;
   const clDon=[
@@ -1009,7 +1017,10 @@ function addTP(){
   const grp=role==='pho_chanh_an'?document.getElementById('tp-grp').value:'';
   const id='tp'+Date.now(),color=document.getElementById('tp-c').value;
   S.judges.push({id,name:n,role:document.getElementById('tp-r').value,spec:document.getElementById('tp-s').value,color});
-  S.accounts.push({id:'u'+Date.now(),name:n,role,pw,color,jid:id,group:grp});
+  // Default allowedLoai based on role/group
+  const defLoai=role==='chanh_an'?['HS']:
+    role==='pho_chanh_an'?({'ds':['DS','MGTHADN'],'hngd':['HN'],'mix':['KDTM','LD','HC','XLHC','MGHS']}[grp]||[]):[];
+  S.accounts.push({id:'u'+Date.now(),name:n,role,pw,color,jid:id,group:grp,allowedLoai:defLoai});
   save();cm('m-tp');renderPage(curPage);renderLogin();
 }
 
@@ -1188,6 +1199,50 @@ function submitLyDo(){
   save(); cm('m-lydo'); openDt(lyDoCtx.cid);
 }
 
+
+// ─── FILTER LOAN TYPES IN ADD-DON FORM ───
+function filterLoanTypes(){
+  const sel=document.getElementById('f-l');
+  if(!sel) return;
+  const allowed=myAllowedLoai();
+  Array.from(sel.options).forEach(opt=>{
+    opt.hidden = !isSuperAdmin() && allowed.length>0 && !allowed.includes(opt.value);
+  });
+  // Select first visible option
+  const firstVisible=Array.from(sel.options).find(o=>!o.hidden);
+  if(firstVisible) sel.value=firstVisible.value;
+}
+
+// ─── EDIT ACCOUNT PERMISSIONS (superadmin only) ───
+let editPermAccId=null;
+const ALL_LOAI=['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS'];
+const LOAI_LABELS={DS:'Dân sự',HS:'Hình sự',HC:'Hành chính',KDTM:'Kinh doanh-TM',LD:'Lao động',HN:'Hôn nhân & GĐ',XLHC:'Xử lý hành chính',MGTHADN:'Miễn giảm THADN',MGHS:'Miễn giảm HS (Treo/CTKGG)'};
+
+function openEditPerm(accId){
+  if(!isSuperAdmin()) return;
+  editPermAccId=accId;
+  const acc=S.accounts.find(a=>a.id===accId);
+  if(!acc) return;
+  const allowed=acc.allowedLoai||[];
+  document.getElementById('ep-name').textContent=acc.name+' ('+acc.role+')';
+  document.getElementById('ep-loai-list').innerHTML=ALL_LOAI.map(l=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:7px;cursor:pointer;margin-bottom:5px">
+      <input type="checkbox" value="${l}" ${allowed.includes(l)?'checked':''} style="accent-color:var(--teal);width:15px;height:15px">
+      <span style="font-size:13px;font-weight:600">${l}</span>
+      <span style="font-size:11px;color:var(--text2);margin-left:4px">${LOAI_LABELS[l]||''}</span>
+    </label>`).join('');
+  om('m-ep');
+}
+
+function saveEditPerm(){
+  const acc=S.accounts.find(a=>a.id===editPermAccId);
+  if(!acc) return;
+  const checks=document.querySelectorAll('#ep-loai-list input[type=checkbox]');
+  acc.allowedLoai=Array.from(checks).filter(x=>x.checked).map(x=>x.value);
+  save(); cm('m-ep'); renderPage(curPage);
+  showToast('✅ Đã cập nhật quyền phân công cho '+acc.name);
+}
+
 // ─── ĐỔI MẬT KHẨU (bản thân) ───
 function om_cpw(){
   document.getElementById('cpw-name').textContent = session.name;
@@ -1311,6 +1366,20 @@ renderLogin();
       <button class="btn btn-s" onclick="cancelLyDo()">↩ Hủy</button>
       <button class="btn btn-p" onclick="submitLyDo()">✓ Xác nhận</button>
     </div>
+  </div>
+</div>
+
+
+<!-- MODAL: EDIT PERMISSIONS (superadmin) -->
+<div class="mo" id="m-ep">
+  <div class="modal sm" style="max-width:480px">
+    <div class="mh"><h2>🔐 Phân quyền loại án</h2><button class="mc" onclick="cm('m-ep')">✕</button></div>
+    <div class="mb">
+      <div class="ab ai" style="margin-bottom:12px">⚙️ Cấu hình loại án được phép phân công cho: <b id="ep-name"></b></div>
+      <div style="font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:8px">Tích chọn loại án được phép phân công</div>
+      <div id="ep-loai-list"></div>
+    </div>
+    <div class="mf"><button class="btn btn-s" onclick="cm('m-ep')">Hủy</button><button class="btn btn-p" onclick="saveEditPerm()">💾 Lưu quyền</button></div>
   </div>
 </div>
 
