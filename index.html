@@ -737,9 +737,6 @@ function renderPC(){
       <td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
       <td><button class="btn btn-p btn-sm" onclick="openThuLy('${c.id}');event.stopPropagation()">⚖️ Thụ lý & Phân công</button></td>
     </tr>`}).join(''):`<tr><td colspan="8" style="text-align:center;padding:14px;color:var(--text2)">Không có hồ sơ chờ thụ lý</td></tr>`;
-      <td>${dlLabel(c.ngayNhan,c.thoiHan)}</td>
-      <td><button class="btn btn-p btn-sm" onclick="openThuLy('${c.id}');event.stopPropagation()">⚖️ Thụ lý & Phân công</button></td>
-    </tr>`;}).join(''):`<tr><td colspan="8" style="text-align:center;padding:14px;color:var(--text2)">Không có hồ sơ chờ thụ lý</td></tr>`;
   return`
   <div class="ab ai" style="margin-bottom:12px">👤 ${roleInfo}</div>
   ${choThuLy.length?`<div class="ab aw">📬 Có <b>${choThuLy.length} hồ sơ</b> đã xử lý đơn xong, đang chờ phân công.</div>`:''}
