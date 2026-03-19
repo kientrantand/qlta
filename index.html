@@ -185,7 +185,7 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
       <div class="nsec" id="adNav" style="display:none">Phân công</div>
       <div class="ni" id="niPC" data-page="pc" onclick="go('pc')" style="display:none"><span class="ic">🗂️</span>Phân công hồ sơ<span class="nb r" id="nb-pc">0</span></div>
       <div class="nsec">Theo dõi</div>
-      <div class="ni active" data-page="dash" onclick="go('dash')"><span class="ic">📊</span>Bảng tổng quan</div>
+      <div class="ni" data-page="dash" onclick="go('dash')"><span class="ic">📊</span>Bảng tổng quan</div>
       <div class="ni" data-page="don" onclick="go('don')"><span class="ic">📋</span>Module 1: Đơn xem xét<span class="nb r" id="nb-don">0</span></div>
       <div class="ni" data-page="vuan" onclick="go('vuan')"><span class="ic">⚖️</span>Module 2: Vụ án<span class="nb a" id="nb-vuan">0</span></div>
       <div class="nsec">Cảnh báo</div>
@@ -781,11 +781,13 @@ function renderTP(){
 // DETAIL MODAL
 function openDt(id){
   const c=S.cases.find(x=>x.id===id);if(!c)return;
+  clearPendingFinal(); // reset any pending selection from previous modal
   curDetailId=id;
   const j=gj(c.tjid),r=pr(c),days=dlDays(c.ngayNhan,c.thoiHan);
   // superadmin: full edit. chanh_an/pca: view only in M1 (can't tick checklist for judge).
   // judge: edit only their own cases not in choThuLy/donXongM1
-  const canEdit=isSuperAdmin()||(c.tjid===myJid()&&isJudge()&&!['choThuLy','donXongM1'].includes(c.ts));
+  // donXongM1 is still editable (judge can still undo before admin processes)
+  const canEdit=isSuperAdmin()||(c.tjid===myJid()&&isJudge()&&c.ts!=='choThuLy');
   document.getElementById('dt-t').textContent=`${c.soDon} — ${c.nguyenDon} vs ${c.biDon}`;
   document.getElementById('dt-s').textContent=`${c.loai} · Nhận ${fmt(c.ngayNhan)} · ${j?j.name:'Chưa phân công'}`;
   let ah='';
@@ -802,12 +804,11 @@ function openDt(id){
     const isFinalQueue = item.type==='final_queue';
     const isFinalAny = isFinalEnd||isFinalQueue;
     const isOtherFinalDone = isFinalAny && finalDone && finalDone.id!==item.id;
-    // Allow unticking the currently selected final item (so judge can re-select)
-    // Only lock OTHER final items (not the selected one) and only lock when sent to admin (choThuLy)
-    const isSelectedFinal = isFinalAny && item.done; // this is the one currently ticked
-    const locked = !canEdit 
-      || (isOtherFinalDone && !isSelectedFinal)  // gray others but NOT the ticked one
-      || (c.ts==='choThuLy' && c.mod==='don');   // fully lock once sent to admin
+    // Pending state overrides: items will be grayed by renderPendingChecklist JS directly
+    // Here we only lock when fully sent to admin queue
+    const isSelectedFinal = isFinalAny && item.done;
+    const locked = !canEdit
+      || (c.ts==='choThuLy' && c.mod==='don');
     // Module 2: finish types
     const isFinishA = item.type==='finish_a';
     const isFinishB = item.type==='finish_b';
@@ -907,32 +908,36 @@ function openDt(id){
 }
 
 function swTab(el,tid){const ctx=el.closest('.mb');ctx.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');ctx.querySelectorAll('.tp').forEach(p=>p.classList.remove('active'));document.getElementById(tid).classList.add('active')}
+// Pending state for Module 1 final item selection (not saved until confirmed)
+let pendingFinal = null; // {cid, iid, type}
+
+function clearPendingFinal(){
+  pendingFinal=null;
+  const bar=document.getElementById('pending-confirm-bar');
+  if(bar) bar.style.display='none';
+}
+
 function togChk(cid,iid){
   const c=S.cases.find(x=>x.id===cid);if(!c)return;
-  // superadmin: full edit. chanh_an/pca: view only in M1 (can't tick checklist for judge).
-  // judge: edit only their own cases not in choThuLy/donXongM1
-  const canEdit=isSuperAdmin()||(c.tjid===myJid()&&isJudge()&&!['choThuLy','donXongM1'].includes(c.ts));if(!canEdit)return;
+  const canEdit=isSuperAdmin()||(c.tjid===myJid()&&isJudge()&&!['choThuLy'].includes(c.ts));if(!canEdit)return;
   const item=c.cl.find(x=>x.id===iid);if(!item)return;
   const isFinalType = item.type==='final_end'||item.type==='final_queue';
 
-  // MODULE 1: final items are mutually exclusive
+  // MODULE 1: final items — use PENDING state, don't save yet
   if(c.mod==='don' && isFinalType){
-    if(!item.done){
-      // Uncheck all other final items
-      c.cl.filter(x=>(x.type==='final_end'||x.type==='final_queue')&&x.id!==iid).forEach(x=>{x.done=false;x.at=null;});
-      item.done=true; item.at=today();
-      if(item.type==='final_queue'){
-        // Only "Đề xuất thụ lý" triggers confirm → admin queue
-        save(); cm('m-dt'); openConfirmDone(cid); return;
-      } else {
-        // final_end: Trả lại đơn / Chuyển thẩm quyền → mark as done/closed at M1
-        c.ts='donXongM1';
-      }
-    } else {
-      item.done=false; item.at=null;
-      if(c.ts==='donXongM1') c.ts='dangXuLy';
+    // If clicking the currently pending item → cancel/deselect it
+    if(pendingFinal && pendingFinal.cid===cid && pendingFinal.iid===iid){
+      clearPendingFinal();
+      openDt(cid); return;
     }
+    // Set new pending (replaces any previous)
+    pendingFinal={cid, iid, type:item.type};
+    // Re-render checklist with pending state shown
+    renderPendingChecklist(cid);
+    showPendingBar(cid, iid, item.type, item.t);
+    return;
   } else {
+    // Normal items: toggle and save immediately
     item.done=!item.done; item.at=item.done?today():null;
   }
 
@@ -962,7 +967,10 @@ function om(id){
   document.getElementById(id).classList.add('open');
   if(id==='m-don'){document.getElementById('f-nn').value=today();renderAlList();newDonJid='';filterLoanTypes();const hgdt=document.getElementById('f-hgdt');if(hgdt)hgdt.checked=false;}
 }
-function cm(id){document.getElementById(id).classList.remove('open')}
+function cm(id){
+  document.getElementById(id).classList.remove('open');
+  if(id==='m-dt') clearPendingFinal();
+}
 document.querySelectorAll('.mo').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open')}));
 
 function renderAlList(){
@@ -1241,6 +1249,87 @@ function saveEditPerm(){
   acc.allowedLoai=Array.from(checks).filter(x=>x.checked).map(x=>x.value);
   save(); cm('m-ep'); renderPage(curPage);
   showToast('✅ Đã cập nhật quyền phân công cho '+acc.name);
+}
+
+
+// ─── PENDING FINAL ITEM LOGIC (Module 1) ───
+function renderPendingChecklist(cid){
+  // Re-renders checklist items in the open modal with pending highlight
+  const c=S.cases.find(x=>x.id===cid);if(!c)return;
+  const items=c.cl;
+  items.forEach(item=>{
+    const el=document.getElementById('cli-'+item.id);
+    if(!el)return;
+    const chk=document.getElementById('chk-'+item.id);
+    const isPending=pendingFinal&&pendingFinal.iid===item.id;
+    const isOtherFinal=(item.type==='final_end'||item.type==='final_queue')&&pendingFinal&&!isPending;
+    // Show pending item as checked (visually)
+    if(chk){
+      chk.checked=isPending||item.done;
+      chk.disabled=isOtherFinal; // gray out other final items
+    }
+    el.style.opacity=isOtherFinal?'0.3':'1';
+    if(isPending){
+      el.style.background='rgba(0,196,167,0.10)';
+      el.style.borderLeft='3px solid var(--teal)';
+    }
+  });
+}
+
+function showPendingBar(cid, iid, type, label){
+  let bar=document.getElementById('pending-confirm-bar');
+  if(!bar){
+    // Create bar inside the checklist tab
+    const clTab=document.getElementById('tp-cl');
+    if(!clTab)return;
+    bar=document.createElement('div');
+    bar.id='pending-confirm-bar';
+    bar.style.cssText='margin-top:12px;padding:12px 14px;background:rgba(0,196,167,0.12);border:1px solid rgba(0,196,167,0.4);border-radius:8px;display:flex;align-items:center;gap:10px';
+    clTab.appendChild(bar);
+  }
+  const typeLabel=type==='final_queue'?'→ Đề xuất thụ lý (chuyển lên Admin)':'✓ Kết thúc tại Module 1';
+  bar.style.display='flex';
+  bar.innerHTML=`
+    <div style="flex:1">
+      <div style="font-size:12px;font-weight:700;color:var(--teal)">⏳ Đang chờ xác nhận</div>
+      <div style="font-size:13px;margin-top:2px"><b>${label}</b></div>
+      <div style="font-size:11px;color:var(--text2);margin-top:2px">${typeLabel}</div>
+    </div>
+    <button class="btn btn-s btn-sm" onclick="cancelFinalItem()" style="color:var(--red)">✕ Bỏ chọn</button>
+    <button class="btn btn-p btn-sm" onclick="confirmFinalItem('${cid}','${iid}','${type}')">✅ Xác nhận</button>`;
+}
+
+function cancelFinalItem(){
+  clearPendingFinal();
+  // Re-render checklist to restore original state
+  const cid=currentDetailId;
+  if(cid){
+    const c=S.cases.find(x=>x.id===cid);
+    if(c) c.cl.forEach(item=>{
+      const el=document.getElementById('cli-'+item.id);
+      const chk=document.getElementById('chk-'+item.id);
+      if(el){el.style.background='';el.style.borderLeft='';el.style.opacity='';}
+      if(chk){chk.checked=item.done;chk.disabled=false;}
+    });
+  }
+}
+
+function confirmFinalItem(cid, iid, type){
+  const c=S.cases.find(x=>x.id===cid);if(!c)return;
+  // Apply the selection permanently
+  c.cl.filter(x=>(x.type==='final_end'||x.type==='final_queue')&&x.id!==iid).forEach(x=>{x.done=false;x.at=null;});
+  const item=c.cl.find(x=>x.id===iid);
+  if(item){item.done=true;item.at=today();}
+  clearPendingFinal();
+  if(type==='final_queue'){
+    // "Đề xuất thụ lý" → save and open confirm dialog to send to admin
+    save(); cm('m-dt'); openConfirmDone(cid);
+  } else {
+    // "Trả lại đơn" / "Chuyển thẩm quyền" → mark done at M1
+    c.ts='donXongM1';
+    save(); openDt(cid);
+    showToast('✅ Đã ghi nhận: '+item.t);
+  }
 }
 
 // ─── ĐỔI MẬT KHẨU (bản thân) ───
