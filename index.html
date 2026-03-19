@@ -158,18 +158,41 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
     <div class="llogo">
       <div class="court">TAND Khu Vực 7 · Ninh Bình</div>
       <div class="title">Phân hồ sơ & Theo dõi Vụ án</div>
-      <div class="sub">Chọn tài khoản để đăng nhập</div>
+      <div class="sub">Đăng nhập hệ thống</div>
     </div>
-    <div class="laccs" id="laccs"></div>
+    <div class="lpw">
+      <label>Tên đăng nhập</label>
+      <input type="text" id="lusername" placeholder="Nhập tên đăng nhập..."
+        autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('lpw').focus()"/>
+    </div>
     <div class="lpw">
       <label>Mật khẩu</label>
-      <input type="password" id="lpw" placeholder="Nhập mật khẩu..." onkeydown="if(event.key==='Enter')doLogin()"/>
+      <input type="password" id="lpw" placeholder="Nhập mật khẩu..."
+        autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
-    <div class="lerr" id="lerr">❌ Mật khẩu không đúng</div>
-    <button class="btn btn-p" style="width:100%;padding:11px;font-size:14px;justify-content:center" onclick="doLogin()">Đăng nhập →</button>
-    <div class="lhint">Mỗi tài khoản có mật khẩu riêng. Liên hệ Quản trị viên nếu quên mật khẩu.</div>
-    <div style="margin-top:10px;text-align:center">
-      <button onclick="resetStore()" style="background:none;border:none;color:var(--text2);font-size:10px;cursor:pointer;text-decoration:underline;font-family:'Be Vietnam Pro'">⚙️ Khôi phục dữ liệu mặc định (nếu không chọn được tài khoản)</button>
+    <div class="lerr" id="lerr">❌ Tên đăng nhập hoặc mật khẩu không đúng</div>
+    <button class="btn btn-p" style="width:100%;padding:11px;font-size:14px;justify-content:center;margin-top:4px" onclick="doLogin()">Đăng nhập →</button>
+    <div class="lhint" style="margin-top:14px">Liên hệ Quản trị viên nếu quên mật khẩu.</div>
+    <div style="margin-top:12px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;overflow:hidden">
+      <div onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'" style="padding:8px 12px;cursor:pointer;font-size:11px;color:var(--text2);display:flex;align-items:center;justify-content:space-between">
+        <span>📋 Tài khoản mặc định (demo)</span><span>▼</span>
+      </div>
+      <div style="display:none;padding:0 12px 10px;font-size:11px;color:var(--text2)">
+        <table style="width:100%;border-collapse:collapse">
+          <tr style="border-bottom:1px solid var(--border)"><th style="text-align:left;padding:4px 0;font-size:10px;color:var(--text2)">Tên đăng nhập</th><th style="text-align:left;padding:4px 0;font-size:10px;color:var(--text2)">Mật khẩu</th><th style="text-align:left;padding:4px 0;font-size:10px;color:var(--text2)">Vai trò</th></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">admin</td><td style="padding:3px 0;font-family:'JetBrains Mono'">admin123</td><td style="padding:3px 0">⚙️ Quản trị</td></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">chanh_an</td><td style="padding:3px 0;font-family:'JetBrains Mono'">123456</td><td style="padding:3px 0">🏛️ Chánh án</td></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">pca_ds</td><td style="padding:3px 0;font-family:'JetBrains Mono'">123456</td><td style="padding:3px 0">⚖️ P.CA Dân sự</td></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">pca_hngd</td><td style="padding:3px 0;font-family:'JetBrains Mono'">123456</td><td style="padding:3px 0">⚖️ P.CA HN&GĐ</td></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">pca_mix</td><td style="padding:3px 0;font-family:'JetBrains Mono'">123456</td><td style="padding:3px 0">⚖️ P.CA MIX</td></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">lan</td><td style="padding:3px 0;font-family:'JetBrains Mono'">123456</td><td style="padding:3px 0">👨‍⚖️ Thẩm phán</td></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">tuan</td><td style="padding:3px 0;font-family:'JetBrains Mono'">123456</td><td style="padding:3px 0">👨‍⚖️ Thẩm phán</td></tr>
+          <tr><td style="padding:3px 0;font-family:'JetBrains Mono';color:var(--teal)">thu</td><td style="padding:3px 0;font-family:'JetBrains Mono'">123456</td><td style="padding:3px 0">👨‍⚖️ Thẩm phán</td></tr>
+        </table>
+      </div>
+    </div>
+    <div style="margin-top:8px;text-align:center">
+      <button onclick="resetStore()" style="background:none;border:none;color:var(--text2);font-size:10px;cursor:pointer;text-decoration:underline;font-family:'Be Vietnam Pro'">⚙️ Khôi phục dữ liệu mặc định</button>
     </div>
   </div>
 </div>
@@ -281,6 +304,7 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
     <div class="mh"><h2>👨‍⚖️ Thêm Thẩm phán</h2><button class="mc" onclick="cm('m-tp')">✕</button></div>
     <div class="mb">
       <div class="fg"><label>Họ và tên</label><input id="tp-n" placeholder="Nguyễn Văn A"/></div>
+      <div class="fg"><label>Tên đăng nhập <span style="color:var(--red)">*</span></label><input id="tp-username" placeholder="vd: nguyen_van_a" autocomplete="off"/></div>
       <div class="fg"><label>Chức danh hiển thị</label><select id="tp-r"><option>Chánh án</option><option>Phó Chánh án</option><option selected>Thẩm phán</option><option>Thẩm phán dự bị</option></select></div>
       <div class="fg"><label>Vai trò hệ thống</label>
         <select id="tp-adm" onchange="toggleGroupField()">
@@ -308,14 +332,14 @@ tbody td{padding:10px 12px;font-size:13px;vertical-align:middle}
 // ═══════════════════════════════ DATA ═══════════════════════════════
 const DEF = {
   accounts:[
-    {id:'sa',   name:'Quản trị viên',    role:'superadmin',   pw:'superadmin@2026',color:'#f43f5e',jid:'',    group:'',   allowedLoai:['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS']},
-    {id:'ca',   name:'Nguyễn Văn Hòa',  role:'chanh_an',     pw:'admin123',        color:'#00c4a7',jid:'tp1', group:'HS', allowedLoai:['HS']},
-    {id:'pca1', name:'Hoàng Văn Dũng',  role:'pho_chanh_an', pw:'dung@pca',        color:'#a78bfa',jid:'tp5', group:'ds', allowedLoai:['DS','MGTHADN']},
-    {id:'pca2', name:'Lê Thị Hương',    role:'pho_chanh_an', pw:'huong@pca',       color:'#fb923c',jid:'tp6', group:'hngd',allowedLoai:['HN']},
-    {id:'pca3', name:'Trần Quốc Bảo',   role:'pho_chanh_an', pw:'bao@pca',         color:'#34d399',jid:'tp7', group:'mix',allowedLoai:['KDTM','LD','HC','XLHC','MGHS']},
-    {id:'u2',   name:'Trần Thị Lan',    role:'judge',        pw:'lan@2026',        color:'#60a5fa',jid:'tp2', group:'',   allowedLoai:[]},
-    {id:'u3',   name:'Lê Minh Tuấn',    role:'judge',        pw:'tuan@2026',       color:'#f5a623',jid:'tp3', group:'',   allowedLoai:[]},
-    {id:'u4',   name:'Phạm Thị Thu',    role:'judge',        pw:'thu@2026',        color:'#f05252',jid:'tp4', group:'',   allowedLoai:[]},
+    {id:'sa',   username:'admin',     name:'Quản trị viên',    role:'superadmin',   pw:'admin123',        color:'#f43f5e',jid:'',    group:'',   allowedLoai:['DS','HS','HC','KDTM','LD','HN','XLHC','MGTHADN','MGHS']},
+    {id:'ca',   username:'chanh_an',   name:'Nguyễn Văn Hòa',  role:'chanh_an',     pw:'123456',          color:'#00c4a7',jid:'tp1', group:'HS', allowedLoai:['HS']},
+    {id:'pca1', username:'pca_ds',     name:'Hoàng Văn Dũng',  role:'pho_chanh_an', pw:'123456',          color:'#a78bfa',jid:'tp5', group:'ds', allowedLoai:['DS','MGTHADN']},
+    {id:'pca2', username:'pca_hngd',   name:'Lê Thị Hương',    role:'pho_chanh_an', pw:'123456',          color:'#fb923c',jid:'tp6', group:'hngd',allowedLoai:['HN']},
+    {id:'pca3', username:'pca_mix',    name:'Trần Quốc Bảo',   role:'pho_chanh_an', pw:'123456',          color:'#34d399',jid:'tp7', group:'mix',allowedLoai:['KDTM','LD','HC','XLHC','MGHS']},
+    {id:'u2',   username:'lan',        name:'Trần Thị Lan',    role:'judge',        pw:'123456',          color:'#60a5fa',jid:'tp2', group:'',   allowedLoai:[]},
+    {id:'u3',   username:'tuan',       name:'Lê Minh Tuấn',    role:'judge',        pw:'123456',          color:'#f5a623',jid:'tp3', group:'',   allowedLoai:[]},
+    {id:'u4',   username:'thu',        name:'Phạm Thị Thu',    role:'judge',        pw:'123456',          color:'#f05252',jid:'tp4', group:'',   allowedLoai:[]},
   ],
   judges:[
     {id:'tp1',name:'Nguyễn Văn Hòa',role:'Chánh án',spec:'HS',color:'#00c4a7'},
@@ -474,33 +498,20 @@ function autoStatus(){
 }
 
 // ═══════════════ LOGIN ═══════════════
-function renderLogin(){
-  const laccsEl = document.getElementById('laccs');
-  if(!laccsEl){ console.error('laccs element not found'); return; }
-  if(!S.accounts || !S.accounts.length){ 
-    laccsEl.innerHTML='<div style="color:var(--red);font-size:13px;text-align:center;padding:12px">⚠️ Lỗi tải dữ liệu tài khoản. Vui lòng nhấn nút Khôi phục bên dưới.</div>';
-    return;
-  }
-  laccsEl.innerHTML=S.accounts.map(a=>`
-    <div class="lacc" id="la-${a.id}" onclick="selAcc('${a.id}')">
-      <div class="lav" style="background:${a.color}22;color:${a.color}">${ini(a.name)}</div>
-      <div><div class="lan">${a.name}</div><div class="lar">${a.role}</div></div>
-      <span class="labg ${a.role==='superadmin'?'admin':a.role==='chanh_an'?'admin':a.role==='pho_chanh_an'?'admin':'judge'}">${
-      a.role==='superadmin'?'⚙️ Quản trị':
-      a.role==='chanh_an'?'🏛️ Chánh án':
-      a.role==='pho_chanh_an'?'⚖️ P.Chánh án':
-      '👨‍⚖️ Thẩm phán'
-    }</span>
-    </div>`).join('');
-}
-let selAccId=null;
-function selAcc(id){selAccId=id;document.querySelectorAll('.lacc').forEach(b=>b.classList.remove('sel'));document.getElementById('la-'+id)?.classList.add('sel');document.getElementById('lpw').focus()}
+// renderLogin replaced by static HTML
+function renderLogin(){ /* no-op */ }
+
+let selAccId=null; // legacy, not used
+
 function doLogin(){
-  const err=document.getElementById('lerr');err.style.display='none';
-  if(!selAccId){err.textContent='❌ Vui lòng chọn tài khoản';err.style.display='block';return}
+  const err=document.getElementById('lerr');
+  err.style.display='none';
+  const username=document.getElementById('lusername').value.trim().toLowerCase();
   const pw=document.getElementById('lpw').value;
-  const acc=S.accounts.find(a=>a.id===selAccId);
-  if(!acc||acc.pw!==pw){err.textContent='❌ Mật khẩu không đúng';err.style.display='block';return}
+  if(!username){err.textContent='❌ Vui lòng nhập tên đăng nhập';err.style.display='block';return}
+  if(!pw){err.textContent='❌ Vui lòng nhập mật khẩu';err.style.display='block';return}
+  const acc=S.accounts.find(a=>(a.username||'').toLowerCase()===username && a.pw===pw);
+  if(!acc){err.style.display='block';return}
   session=acc;
   sessionStorage.setItem('tand_session', JSON.stringify(acc));
   document.getElementById('loginScreen').style.display='none';
@@ -510,8 +521,10 @@ function doLogin(){
 function doLogout(){
   session=null; selAccId=null;
   sessionStorage.removeItem('tand_session');
-  document.getElementById('lpw').value='';
-  document.querySelectorAll('.lacc').forEach(b=>b.classList.remove('sel'));
+  const un=document.getElementById('lusername');
+  const pw=document.getElementById('lpw');
+  if(un) un.value='';
+  if(pw) pw.value='';
   document.getElementById('loginScreen').style.display='flex';
   document.getElementById('appScreen').style.display='none';
 }
@@ -524,6 +537,9 @@ function initApp(){
   document.getElementById('sbName').textContent=session.name;
   const roleLabel={superadmin:'⚙️ Quản trị hệ thống',chanh_an:'🏛️ Chánh án',pho_chanh_an:'⚖️ Phó Chánh án',judge:'👨‍⚖️ Thẩm phán'};
   document.getElementById('sbRole').textContent=roleLabel[session.role]||'👤 Người dùng';
+  // Show login username in sidebar tooltip
+  const sbUser=document.querySelector('.sb-user');
+  if(sbUser && session.username) sbUser.title=`Đăng xuất (${session.username})`;
   // Show/hide admin nav section
   document.getElementById('adNav').style.display=canAssign()?'block':'none';
   document.getElementById('niPC').style.display=canAssign()?'flex':'none';
@@ -807,6 +823,7 @@ function renderTP(){
         <div>
           <div style="font-size:14px;font-weight:800">${j.name}</div>
           <div style="font-size:11px;color:var(--text2)">${j.role}${j.spec?' · '+j.spec:''}</div>
+          ${acc?`<div style="font-size:11px;color:var(--text2);margin-top:1px">🔑 <span style="font-family:'JetBrains Mono';font-size:11px">${acc.username||'—'}</span></div>`:''}
           ${acc?`<span class="badge ${acc.role==='superadmin'?'bg-r':acc.role==='chanh_an'?'bg-t':acc.role==='pho_chanh_an'?'bg-pu':'bg-b'}" style="margin-top:3px">${
             acc.role==='superadmin'?'⚙️ Quản trị':acc.role==='chanh_an'?'🏛️ Chánh án':
             acc.role==='pho_chanh_an'?`⚖️ P.Chánh án – ${{'ds':'Nhóm DS','hngd':'Nhóm HNGĐ','mix':'Nhóm MIX'}[acc.group]||acc.group}`:
@@ -1091,7 +1108,10 @@ function addTP(){
   // Default allowedLoai based on role/group
   const defLoai=role==='chanh_an'?['HS']:
     role==='pho_chanh_an'?({'ds':['DS','MGTHADN'],'hngd':['HN'],'mix':['KDTM','LD','HC','XLHC','MGHS']}[grp]||[]):[];
-  S.accounts.push({id:'u'+Date.now(),name:n,role,pw,color,jid:id,group:grp,allowedLoai:defLoai});
+  const uname=(document.getElementById('tp-username').value.trim().toLowerCase())||n.toLowerCase().replace(/\s+/g,'_');
+  // Check username not already taken
+  if(S.accounts.find(a=>a.username===uname)){alert('Tên đăng nhập đã tồn tại, vui lòng chọn tên khác');return;}
+  S.accounts.push({id:'u'+Date.now(),name:n,username:uname,role,pw,color,jid:id,group:grp,allowedLoai:defLoai});
   save();cm('m-tp');renderPage(curPage);renderLogin();
 }
 
@@ -1411,6 +1431,8 @@ function resetStore(){
 // ─── ĐỔI MẬT KHẨU (bản thân) ───
 function om_cpw(){
   document.getElementById('cpw-name').textContent = session.name;
+  const unEl=document.getElementById('cpw-username');
+  if(unEl) unEl.textContent = session.username||'—';
   document.getElementById('cpw-old').value='';
   document.getElementById('cpw-new').value='';
   document.getElementById('cpw-cf').value='';
@@ -1573,7 +1595,7 @@ document.addEventListener('DOMContentLoaded', function(){
   <div class="modal sm">
     <div class="mh"><h2>🔑 Đổi mật khẩu</h2><button class="mc" onclick="cm('m-cpw')">✕</button></div>
     <div class="mb">
-      <div class="ab ai" style="margin-bottom:12px">ℹ️ Đổi mật khẩu tài khoản <b id="cpw-name"></b></div>
+      <div class="ab ai" style="margin-bottom:12px">ℹ️ Tài khoản: <b id="cpw-name"></b> &nbsp;|&nbsp; Tên đăng nhập: <code id="cpw-username" style="font-family:'JetBrains Mono';color:var(--teal)"></code></div>
       <div class="fg"><label>Mật khẩu hiện tại</label><input type="password" id="cpw-old" placeholder="Nhập mật khẩu hiện tại"/></div>
       <div class="fg"><label>Mật khẩu mới</label><input type="password" id="cpw-new" placeholder="Tối thiểu 6 ký tự"/></div>
       <div class="fg"><label>Xác nhận mật khẩu mới</label><input type="password" id="cpw-cf" placeholder="Nhập lại mật khẩu mới"/></div>
